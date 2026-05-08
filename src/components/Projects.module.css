@@ -1,0 +1,133 @@
+.projects {
+  background: var(--white);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+.card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card--sage { border-color: var(--sage); }
+.card--clay { border-color: var(--clay-light); }
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.thumb--sage {
+  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+}
+
+.thumb--clay {
+  background: linear-gradient(135deg, var(--clay-light) 0%, var(--clay) 100%);
+}
+
+.thumbLabel {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+
+.body {
+  padding: 28px;
+  background: var(--white);
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--clay);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.techBadge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--sand);
+  color: var(--text);
+  border: 1px solid var(--sand-dark);
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+}
+
+.linkBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  border: 1.5px solid var(--sand-dark);
+  border-radius: var(--radius-xl);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.linkBtn:hover {
+  border-color: var(--dark);
+  color: var(--dark);
+}
+
+.linkBtnPrimary {
+  background: var(--dark);
+  border-color: var(--dark);
+  color: var(--sand);
+}
+
+.linkBtnPrimary:hover {
+  background: var(--dark-mid);
+  border-color: var(--dark-mid);
+  color: var(--sand);
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}

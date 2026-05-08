@@ -1,0 +1,110 @@
+.blog {
+  background: var(--sand);
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 48px;
+  gap: 16px;
+}
+
+.allLink {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--clay);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  transition: color var(--transition);
+  padding-bottom: 4px;
+}
+
+.allLink:hover {
+  color: var(--dark);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.postLink {
+  display: block;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--sand-dark);
+  transition: background var(--transition);
+  position: relative;
+}
+
+.list li:first-child .postLink {
+  border-top: 1px solid var(--sand-dark);
+}
+
+.postLink:hover .postTitle {
+  color: var(--clay);
+}
+
+.postLink:hover .readMore {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.postMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+}
+
+.postTag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 3px 10px;
+  background: var(--white);
+  border: 1px solid var(--sage);
+  border-radius: 20px;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+
+.postTitle {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--dark);
+  line-height: 1.3;
+  margin-bottom: 10px;
+  transition: color var(--transition);
+}
+
+.postExcerpt {
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.7;
+  max-width: 640px;
+  margin-bottom: 16px;
+}
+
+.readMore {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--clay);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity var(--transition), transform var(--transition);
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .header { flex-direction: column; align-items: flex-start; }
+  .postTitle { font-size: 1.15rem; }
+  .readMore { opacity: 1; transform: none; }
+}

@@ -1,32 +1,29 @@
-import { useScrollReveal } from '../hooks/useScrollReveal'
-import styles from './Skills.module.css'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import styles from './Skills.mobile.module.css'
 
 const categories = [
   {
     icon: '🖥',
-    title: 'Frontend',
+    title: 'Frontend / Web',
     color: 'sage',
     items: [
-      // TODO: 使用技術に変更
-      'React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Vite',
+      'JavaScript', 'TypeScript', 'React', 'HTML / CSS', 'Vite',
+    ],
+  },
+  {
+    icon: '📱',
+    title: 'Mobile / App',
+    color: 'clay',
+    items: [
+      'Swift', 'Dart', 'Flutter',
     ],
   },
   {
     icon: '⚙️',
-    title: 'Backend',
-    color: 'clay',
-    items: [
-      // TODO: 使用技術に変更
-      'Node.js', 'Python', 'FastAPI', 'PostgreSQL', 'Docker',
-    ],
-  },
-  {
-    icon: '🤖',
-    title: 'AI / ML',
+    title: 'Language',
     color: 'sage',
     items: [
-      // TODO: 使用技術に変更
-      'PyTorch', 'scikit-learn', 'OpenAI API', 'LangChain', 'Hugging Face',
+      'Python', 'Java',
     ],
   },
   {
@@ -34,13 +31,12 @@ const categories = [
     title: 'Tools',
     color: 'clay',
     items: [
-      // TODO: 使用ツールに変更
-      'Git / GitHub', 'Figma', 'VS Code', 'Notion', 'Vercel',
+      'Git / GitHub', 'VS Code', 'Xcode', 'Claude', 'Cursor',
     ],
   },
 ]
 
-export default function Skills() {
+export default function SkillsMobile() {
   useScrollReveal()
 
   return (

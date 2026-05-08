@@ -1,6 +1,6 @@
-import styles from './Footer.module.css'
+import styles from './Footer.desktop.module.css'
 
-export default function Footer() {
+export default function FooterDesktop() {
   const year = new Date().getFullYear()
 
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <div className={`container ${styles.inner}`}>
         <p className={styles.copy}>
           {/* TODO: 自分の名前に変更 */}
-          &copy; {year} Your Name. Built with React + Vite.
+          &copy; {year} Iwai Shuto. Built with React + Vite.
         </p>
         <a href="#hero" className={styles.top}>Back to top ↑</a>
       </div>

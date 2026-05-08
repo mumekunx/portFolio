@@ -1,0 +1,104 @@
+.contact {
+  position: relative;
+  background: var(--dark);
+  padding: 120px 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.bgDecor1 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  left: -150px;
+  top: -100px;
+  background: radial-gradient(ellipse, rgba(200, 213, 185, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.bgDecor2 {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  right: -100px;
+  bottom: -80px;
+  background: radial-gradient(ellipse, rgba(212, 168, 150, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  color: var(--sage) !important;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+
+.mailBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 16px 40px;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-xl);
+  color: var(--white);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 56px;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.mailBtn:hover {
+  border-color: var(--sage);
+  background: rgba(200, 213, 185, 0.1);
+  color: var(--sage);
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-xl);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background var(--transition), color var(--transition), transform var(--transition);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.socialLink:hover {
+  background: rgba(255,255,255,0.12);
+  color: var(--white);
+  transform: translateY(-3px);
+}

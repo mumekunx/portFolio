@@ -59,12 +59,12 @@
 .mailBtn {
   display: inline-flex;
   align-items: center;
-  padding: 16px 40px;
+  padding: 14px 24px;
   border: 1.5px solid rgba(255,255,255,0.2);
   border-radius: var(--radius-xl);
   color: var(--white);
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   letter-spacing: 0.03em;
   margin-bottom: 56px;
   transition: border-color var(--transition), background var(--transition), color var(--transition);
@@ -87,7 +87,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 22px;
+  padding: 12px;
   border-radius: var(--radius-xl);
   background: rgba(255,255,255,0.06);
   color: rgba(255,255,255,0.7);
@@ -97,14 +97,12 @@
   border: 1px solid rgba(255,255,255,0.08);
 }
 
+.socialLink span {
+  display: none;
+}
+
 .socialLink:hover {
   background: rgba(255,255,255,0.12);
   color: var(--white);
   transform: translateY(-3px);
-}
-
-@media (max-width: 480px) {
-  .mailBtn { font-size: 0.78rem; padding: 14px 24px; }
-  .socialLink span { display: none; }
-  .socialLink { padding: 12px; }
 }

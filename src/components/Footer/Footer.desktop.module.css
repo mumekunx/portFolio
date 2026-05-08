@@ -29,7 +29,3 @@
 .top:hover {
   color: var(--sage);
 }
-
-@media (max-width: 480px) {
-  .inner { flex-direction: column; text-align: center; gap: 8px; }
-}

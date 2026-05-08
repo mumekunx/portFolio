@@ -102,9 +102,3 @@
   transition: opacity var(--transition), transform var(--transition);
   display: inline-block;
 }
-
-@media (max-width: 600px) {
-  .header { flex-direction: column; align-items: flex-start; }
-  .postTitle { font-size: 1.15rem; }
-  .readMore { opacity: 1; transform: none; }
-}

@@ -1,5 +1,5 @@
-import { useScrollReveal } from '../hooks/useScrollReveal'
-import styles from './Blog.module.css'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
+import styles from './Blog.desktop.module.css'
 
 // TODO: 実際のブログ記事情報に変更（Zenn・はてなブログなど）
 const posts = [
@@ -34,7 +34,7 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
-export default function Blog() {
+export default function BlogDesktop() {
   useScrollReveal()
 
   return (

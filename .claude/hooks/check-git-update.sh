@@ -8,8 +8,10 @@ input=$(cat)
 
 cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // ""')
 
-case "$cmd" in
-  "git fetch"*|"git pull"*|*" git fetch"*|*" git pull"*)
+# Strict match: only when the EXECUTED command (not a quoted argument) is git fetch/pull.
+# Allows: "git fetch", "git pull --rebase", "git -C /path fetch origin"
+# Rejects: 'git commit -m "mentions git fetch"', 'git push'
+if [[ "$cmd" =~ ^[[:space:]]*git([[:space:]]+-[Cc][[:space:]]+[^[:space:]]+)?[[:space:]]+(fetch|pull)([[:space:]]|$) ]]; then
     out=$(printf '%s' "$input" | jq -r '
       (.tool_response.stdout    // "") + "\n" +
       (.tool_response.stderr    // "") + "\n" +
@@ -25,5 +27,4 @@ case "$cmd" in
     if printf '%s' "$out" | grep -qE 'Updating |\.\.[a-f0-9]{6,}|Receiving objects|Unpacking objects|Merge made'; then
       printf '{"hookSpecificOutput":{"hookEventName":"PostToolUse","additionalContext":"git fetch/pull で更新を検出しました。baton.md を読んで最新の引き継ぎ情報を確認してください。"}}'
     fi
-    ;;
-esac
+fi

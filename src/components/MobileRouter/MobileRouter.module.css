@@ -4,6 +4,15 @@
   animation: pageIn 0.32s ease both;
 }
 
+.page :global(.section) {
+  padding-top: 24px;
+}
+
+.backBar {
+  background: var(--sand);
+  border-bottom: 1px solid var(--sand-dark);
+}
+
 .backBtn {
   display: inline-flex;
   align-items: center;

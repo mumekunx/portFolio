@@ -46,16 +46,17 @@ export default function MobileRouter() {
 
   return (
     <div className={styles.page}>
-      <button
-        type="button"
-        className={styles.backBtn}
-        onClick={reset}
-        aria-label="ホームに戻る"
-      >
-        <span className={styles.backArrow}>←</span>
-        <span>Back</span>
-      </button>
-      <p className={styles.crumb}>{labels[hash]}</p>
+      <div className={styles.backBar}>
+        <button
+          type="button"
+          className={styles.backBtn}
+          onClick={reset}
+          aria-label="ホームに戻る"
+        >
+          <span className={styles.backArrow}>←</span>
+          <span>Back</span>
+        </button>
+      </div>
       <PageComponent />
     </div>
   )

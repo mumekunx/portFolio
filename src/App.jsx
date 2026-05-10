@@ -6,19 +6,29 @@ import Projects from './components/Projects'
 import Blog from './components/Blog'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import MobileRouter from './components/MobileRouter'
+import { useIsMobile } from './hooks/useMediaQuery'
 import './index.css'
 
 function App() {
+  const isMobile = useIsMobile()
+
   return (
     <>
       <Nav />
       <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Blog />
-        <Contact />
+        {isMobile ? (
+          <MobileRouter />
+        ) : (
+          <>
+            <Hero />
+            <About />
+            <Skills />
+            <Projects />
+            <Blog />
+            <Contact />
+          </>
+        )}
       </main>
       <Footer />
     </>

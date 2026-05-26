@@ -33,6 +33,9 @@ export default function HeroMobile() {
       <div className={styles.bgShapeAlt} />
 
       <div className={`container ${styles.content}`}>
+        {/* TODO: アイコン（アバター）を入れる枠。<img> 等に差し替え予定 */}
+        <div className={styles.avatar} aria-hidden="true" />
+
         <div className={styles.text}>
           <p className={styles.greeting}>Hi, I&apos;m</p>
           <h1 className={styles.name}>Iwai Shuto</h1>

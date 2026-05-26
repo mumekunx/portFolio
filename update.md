@@ -1,5 +1,59 @@
 # Portfolio プロジェクト概要
 
+## 2026-05-27 — モバイルナビ（About me）をスクロール時も不透明に
+**立案:**
+- スクロール時のナビ背景が `rgba(247,243,238,0.85)` ＋ blur で半透明になり、裏の内容が透けて見える。不透明にしたい。
+- 修正方針: `Nav.mobile.module.css` の `.scrolled` 背景を不透明（`var(--sand)`）に変更。
+- 影響範囲: `src/components/Nav/Nav.mobile.module.css` のみ。
+
+**完了** ✅
+
+## 2026-05-27 — モバイルでフッターより下へのオーバースクロールを抑止
+**立案:**
+- スマホのサブページでスクロール時、iOS のラバーバンドでフッターより下に背景がはみ出して見える。フッターを最下端としてそれ以上スクロールできないようにしたい。
+- 修正方針: `index.css` の `html, body` に `overscroll-behavior-y: none` を付与し、ドキュメントのオーバースクロール（バウンス）を無効化。
+- 影響範囲: `src/index.css` のみ。
+
+**完了** ✅
+
+## 2026-05-27 — スマホHeroに「Hi, I'm」上のアイコン枠を確保
+**立案:**
+- 画面固定後、Hero がやや詰まり気味。将来アイコン（アバター）を「Hi, I'm」の上に置くため、その分のスペースを今のうちに確保したい。
+- 修正方針: `Hero.mobile.jsx` の `.content` 先頭にアイコン用プレースホルダー要素（円形）を追加。`Hero.mobile.module.css` で円枠を定義しつつ、ナビ（4リンク）のフォント/余白を少し詰めて 100svh 内に収める。
+- 影響範囲: `src/components/Hero/Hero.mobile.jsx`, `src/components/Hero/Hero.mobile.module.css`。PC 版・サブページは不変。
+
+**完了** ✅
+
+## 2026-05-27 — スマホ版ホームを画面ぴったり（スクロールなし）に
+**立案:**
+- スマホのランディング（Hero）で `min-height: 100svh` の Hero の下に Footer が積まれ、合計が画面高を超えてスクロールが発生していた。
+- 修正方針: ホーム表示時のみ `document.body` に `home-locked` クラスを付与（`MobileRouter`）。`index.css` のモバイルメディアクエリで `#root`/`main`/`#hero` を flex 化して `100svh` ぴったりに収め `overflow: hidden`。サブページ（about/skills 等）はクラスを外して従来通りスクロール可能のまま。
+- 影響範囲: `src/components/MobileRouter/MobileRouter.jsx`, `src/index.css`。PC 版は不変。
+
+**完了** ✅
+
+## 2026-05-27 — detail.md（ファイル構成リファレンス）を新規作成
+**立案:**
+- CLAUDE.md ルールで必須の `detail.md` が未作成だったため、全ファイルのパス/役割/主要型・メソッド/依存/参照元をまとめたリファレンスを作成する。
+- 影響範囲: `detail.md`（新規）のみ。コードには触れない。
+
+**完了** ✅
+- src 配下を全走査し、共通構成（index.jsx 振り分け + desktop/mobile + CSS Modules）と hooks / MobileRouter / 各セクションを文書化。
+
+## 2026-05-26 04:37 — vite.config.js の base を dev/build で条件分岐
+**立案:**
+- 現状 `base: '/your-repo-name/'` が常時適用されているため、`http://localhost:5173/` にアクセスすると空ページになり、IDE内蔵プレビューが真っ黒に見える。
+- 修正方針: `defineConfig(({ command }) => ...)` 形式に変更し、`command === 'build'` のときだけ `/your-repo-name/` を base にする。dev では `/`。
+- 影響範囲: `vite.config.js` のみ。production ビルドの挙動は据え置き。
+
+**進捗:**
+- `vite.config.js` を `defineConfig(({ command }) => ...)` 形式に変更し、dev は `/`、build 時のみ `/your-repo-name/` を base に設定。
+- Vite 自動再起動後、`http://localhost:5173/` で正常表示を確認（ヒーロー "Iwai Shuto" 表示OK）。
+
+**完了** ✅
+
+**残課題（別件）:** デプロイ前に `/your-repo-name/` を実リポジトリ名へ置換するTODOは残置。
+
 ## 概要
 情報学部学生向けのポートフォリオサイト。現在はプレースホルダーコンテンツ（TODO）が多数あり、カスタマイズ待ちの状態。
 

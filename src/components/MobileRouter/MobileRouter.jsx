@@ -26,14 +26,21 @@ const labels = {
 
 export default function MobileRouter() {
   const { hash, reset } = useHashRoute()
+  const isHome = !hash || hash === 'hero'
 
   // Scroll to top whenever the route changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [hash])
 
+  // ホーム（ランディング）だけ画面ぴったりに固定（スクロール無効）
+  useEffect(() => {
+    document.body.classList.toggle('home-locked', isHome)
+    return () => document.body.classList.remove('home-locked')
+  }, [isHome])
+
   // Empty hash or "hero" → home
-  if (!hash || hash === 'hero') {
+  if (isHome) {
     return <Hero />
   }
 

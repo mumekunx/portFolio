@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import styles from './Projects.desktop.module.css'
 
@@ -50,6 +51,15 @@ const projects = [
 
 export default function ProjectsDesktop() {
   useScrollReveal()
+  const trackRef = useRef(null)
+
+  const scroll = (dir) => {
+    const track = trackRef.current
+    if (!track) return
+    const card = track.firstElementChild
+    const amount = card ? card.offsetWidth + 32 : track.clientWidth * 0.8
+    track.scrollBy({ left: dir * amount, behavior: 'smooth' })
+  }
 
   return (
     <section className={`section ${styles.projects}`} id="projects">
@@ -57,7 +67,17 @@ export default function ProjectsDesktop() {
         <p className="section-label">Projects</p>
         <h2 className="section-title">Selected Works</h2>
 
-        <div className={styles.grid}>
+        <div className={styles.carousel}>
+          <button
+            type="button"
+            className={`${styles.navBtn} ${styles.navPrev}`}
+            onClick={() => scroll(-1)}
+            aria-label="前のプロジェクト"
+          >
+            ←
+          </button>
+
+          <div className={styles.track} ref={trackRef}>
           {projects.map((p, i) => (
             <article
               key={p.id}
@@ -107,6 +127,16 @@ export default function ProjectsDesktop() {
               </div>
             </article>
           ))}
+          </div>
+
+          <button
+            type="button"
+            className={`${styles.navBtn} ${styles.navNext}`}
+            onClick={() => scroll(1)}
+            aria-label="次のプロジェクト"
+          >
+            →
+          </button>
         </div>
       </div>
     </section>

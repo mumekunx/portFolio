@@ -1,5 +1,15 @@
+.about :global(.container) {
+  max-width: none;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
 .about {
-  background: var(--white);
+  background: linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .grid {
@@ -68,8 +78,11 @@
   gap: 16px;
   margin-top: 12px;
   padding: 24px;
-  background: var(--sand);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .fact {
@@ -104,9 +117,12 @@
   align-items: flex-start;
   gap: 12px;
   padding: 14px 16px;
-  background: var(--sand);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
   border-left: 3px solid var(--sage-dark);
+  box-shadow: var(--shadow-sm);
 }
 
 .achieveIcon {

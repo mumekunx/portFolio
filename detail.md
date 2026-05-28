@@ -146,10 +146,10 @@
 - **役割**: HTML テンプレート。`#root` と `main.jsx` の読み込み。
 
 ### `vite.config.js`
-- **役割**: Vite 設定。`base` を dev は `/`、build 時のみ `/your-repo-name/`（GitHub Pages 用、要リポジトリ名置換）に条件分岐。
+- **役割**: Vite 設定。`base` を dev は `/`、build 時のみ `/portFolio/`（GitHub Pages 用）に条件分岐。
 
 ### `package.json`
-- **役割**: 依存・スクリプト。`dev` / `build` / `lint` / `preview` / `deploy`(gh-pages)。`homepage` は要本番 URL 更新。
+- **役割**: 依存・スクリプト。`dev` / `build` / `lint` / `preview` / `deploy`(gh-pages)。`homepage` は `https://mumekunx.github.io/portFolio/`。
 
 ### `eslint.config.js`
 - **役割**: ESLint 設定（react-hooks / react-refresh プラグイン）。

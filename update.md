@@ -1,5 +1,13 @@
 # Portfolio プロジェクト概要
 
+## 2026-05-28 13:56 — GitHub Pages 公開用パスの確定
+**立案:**
+- 初回デプロイ前の残TODOだった `vite.config.js` の `base` と `package.json` の `homepage` をリポジトリ実体に合わせて確定する。
+- 修正方針: `base` を `/portFolio/`、`homepage` を `https://mumekunx.github.io/portFolio/` に置換。
+- 影響範囲: `vite.config.js` / `package.json` / `detail.md`。
+
+**完了** ✅ デプロイ準備完了。`npm run deploy` で公開可能。
+
 ## 2026-05-27 — モバイルナビ（About me）をスクロール時も不透明に
 **立案:**
 - スクロール時のナビ背景が `rgba(247,243,238,0.85)` ＋ blur で半透明になり、裏の内容が透けて見える。不透明にしたい。

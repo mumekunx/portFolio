@@ -1,5 +1,5 @@
 .blog {
-  background: var(--sand);
+  background: var(--white);
 }
 
 .header {
@@ -7,22 +7,24 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 48px;
+  margin-bottom: 32px;
   gap: 16px;
 }
 
-.allLink {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--clay);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  transition: color var(--transition);
-  padding-bottom: 4px;
+.comingSoon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  border-top: 1px solid var(--sand-dark);
+  border-bottom: 1px solid var(--sand-dark);
 }
 
-.allLink:hover {
-  color: var(--dark);
+.comingSoonText {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
 }
 
 .list {
@@ -45,11 +47,6 @@
 
 .postLink:hover .postTitle {
   color: var(--clay);
-}
-
-.postLink:hover .readMore {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .postMeta {

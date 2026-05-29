@@ -1,5 +1,36 @@
 # Portfolio プロジェクト概要
 
+## 2026-05-28 14:45 — Blog を md ファイルベース管理に
+**立案:**
+- `src/posts/` に md を追加するだけでブログに反映される仕組みを構築。記事本文もサイト内で表示する。
+- 方針:
+  - Vite `import.meta.glob('../posts/*.md', { eager: true, query: '?raw', import: 'default' })` で md を全件取得
+  - `gray-matter` で frontmatter（title/date/tag/excerpt/external_url 任意）をパース
+  - ファイル名から slug を生成（例: `2026-04-15-react-hooks.md` → `react-hooks`）
+  - 一覧は date 降順でソート、Blog セクションに記事カードとして表示
+  - `#blog/<slug>` の hash で記事詳細ページに遷移、PC/モバイル両対応
+  - 本文は `react-markdown` + `remark-gfm` + `rehype-highlight` でレンダリング
+  - 「All posts ↗」と Zenn リンクは削除
+- 追加ライブラリ: `gray-matter` / `react-markdown` / `remark-gfm` / `rehype-highlight` / `highlight.js`
+- 影響範囲: package.json、新規 `src/posts/`・`src/lib/posts.js`・`src/components/BlogPost/`、`src/App.jsx`、`src/components/MobileRouter/`、`src/components/Blog/*`、`docs/blog-post-template.md`、`detail.md`、`index.css`
+
+## 2026-05-28 14:25 — Blog セクションを Coming soon... 表示に
+**立案:**
+- 現状のダミー記事3件を一旦削除し、`Coming soon...` の単独表示に置き換え。
+- 今後の記事追加のため、`docs/blog-post-template.md` を新規作成（メタデータ貼り付け用テンプレ: title / date / tag / url / excerpt）。
+- 修正方針:
+  - `Blog.desktop.jsx` / `Blog.mobile.jsx` の `posts` 配列・リスト描画・All posts リンクを削除し、中央に `Coming soon...` を表示する `.comingSoon` ブロックに置換。
+  - `Blog.desktop.module.css` / `Blog.mobile.module.css` に `.comingSoon` スタイル追加（既存トークン `--font-mono` / `--text-light` を使用）。
+  - 不要になった `.list` / `.postLink` 等のスタイル削除（テンプレ復活時の参考にコメントで残さず、git履歴から戻せる前提でクリーンに）。
+- 影響範囲: `src/components/Blog/*` の4ファイル、`detail.md`、新規 `docs/blog-post-template.md`。
+
+**完了** ✅
+- Blog.desktop.jsx / Blog.mobile.jsx: `Coming soon...` 表示に置換、`posts` 配列とリスト描画削除
+- Blog.desktop.module.css / Blog.mobile.module.css: 未使用クラス削除し `.comingSoon` / `.comingSoonText` のみに
+- docs/blog-post-template.md: 新規作成（メタデータ貼り付け用テンプレ + 復活手順）
+- detail.md: Blog セクションと新規テンプレファイルを反映
+- `npm run build` 成功（CSS 32.86KB→30.42KB、JS 234.32KB→231.01KB）。デプロイ前提でローカル確認は未実施。
+
 ## 2026-05-28 13:56 — GitHub Pages 公開用パスの確定
 **立案:**
 - 初回デプロイ前の残TODOだった `vite.config.js` の `base` と `package.json` の `homepage` をリポジトリ実体に合わせて確定する。

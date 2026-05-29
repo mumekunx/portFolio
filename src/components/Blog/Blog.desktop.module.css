@@ -29,18 +29,20 @@
   gap: 16px;
 }
 
-.allLink {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--clay);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  transition: color var(--transition);
-  padding-bottom: 4px;
+.comingSoon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
-.allLink:hover {
-  color: var(--dark);
+.comingSoonText {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .list {

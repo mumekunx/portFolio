@@ -5,6 +5,7 @@ import About from '../About'
 import Skills from '../Skills'
 import Projects from '../Projects'
 import Blog from '../Blog'
+import BlogPost from '../BlogPost'
 import Contact from '../Contact'
 import styles from './MobileRouter.module.css'
 
@@ -16,17 +17,12 @@ const routes = {
   contact: Contact,
 }
 
-const labels = {
-  about: 'About',
-  skills: 'Skills',
-  projects: 'Projects',
-  blog: 'Blog',
-  contact: 'Contact',
-}
-
 export default function MobileRouter() {
-  const { hash, reset } = useHashRoute()
+  const { hash, reset, navigate } = useHashRoute()
   const isHome = !hash || hash === 'hero'
+
+  // #blog/<slug> なら記事詳細
+  const blogSlug = hash.startsWith('blog/') ? hash.slice('blog/'.length) : null
 
   // Scroll to top whenever the route changes
   useEffect(() => {
@@ -42,6 +38,25 @@ export default function MobileRouter() {
   // Empty hash or "hero" → home
   if (isHome) {
     return <Hero />
+  }
+
+  if (blogSlug) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.backBar}>
+          <button
+            type="button"
+            className={styles.backBtn}
+            onClick={() => navigate('blog')}
+            aria-label="Blog 一覧に戻る"
+          >
+            <span className={styles.backArrow}>←</span>
+            <span>Blog</span>
+          </button>
+        </div>
+        <BlogPost slug={blogSlug} variant="mobile" />
+      </div>
+    )
   }
 
   const PageComponent = routes[hash]

@@ -19,9 +19,9 @@
 ### `src/App.jsx`
 - **役割**: ルートコンポーネント。`useIsMobile()` で表示を出し分け。
   - モバイル → `<Nav>` + `<MobileRouter>` + `<Footer>`
-  - PC → `<Nav>` + 全セクション縦並び + `<Footer>`
+  - PC → `<Nav>` + 全セクション縦並び + `<Footer>`、`#blog/<slug>` のときだけ `<BlogPost>` を表示
 - **主要**: `App()`（default export）
-- **依存**: 全セクションコンポーネント, `MobileRouter`, `useMediaQuery` (`useIsMobile`), `./index.css`
+- **依存**: 全セクションコンポーネント, `MobileRouter`, `BlogPost`, `useMediaQuery` (`useIsMobile`), `useHashRoute`, `./index.css`
 - **参照元**: `main.jsx`
 
 ### `src/index.css`
@@ -124,7 +124,20 @@
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。
 
 ### `src/components/Blog/`
-- **役割**: ブログ記事一覧（現状ダミー記事）。
+- **役割**: ブログ記事一覧セクション。`src/lib/posts.js` から取得した記事メタデータをカード表示。記事が0件のときは `Coming soon...` を表示。記事カードのリンクは `#blog/<slug>` で詳細ページへ遷移。
+- **主要ファイル**:
+  - `Blog.desktop.jsx` / `Blog.mobile.jsx`: posts 配列を map してカード描画。0件時は `.comingSoon` 表示
+  - `Blog.desktop.module.css` / `Blog.mobile.module.css`: `.blog` / `.header` / `.list` / `.postLink` / `.postMeta` / `.date` / `.postTag` / `.postTitle` / `.postExcerpt` / `.readMore` / `.comingSoon`
+- **依存**: `lib/posts.js`, `hooks/useScrollReveal`
+
+### `src/components/BlogPost/`
+- **役割**: ブログ記事の詳細ページ。`#blog/<slug>` で表示される。`react-markdown` で本文をHTMLレンダリング、コードブロックは `rehype-highlight`（github-dark テーマ）でハイライト。
+- **主要ファイル**:
+  - `BlogPost.jsx`: `getPost(slug)` で記事取得、`<ReactMarkdown>` で本文描画。`variant="desktop"|"mobile"` で見た目調整、`onBack` で一覧に戻る
+  - `BlogPost.module.css`: 記事ヘッダ、本文（h1-h4, p, ul/ol, code, pre, blockquote, table, img）の全タイポグラフィ
+  - `index.js`: default export 再エクスポート
+- **依存**: `react-markdown`, `remark-gfm`, `rehype-highlight`, `highlight.js/styles/github-dark.css`, `lib/posts.js`
+- **参照元**: `App.jsx`（PC）, `MobileRouter.jsx`（モバイル）
 
 ### `src/components/Contact/`
 - **役割**: 連絡先（メール + SNS）。モバイルでは Hero フッター側にのみ表示する運用。
@@ -153,3 +166,23 @@
 
 ### `eslint.config.js`
 - **役割**: ESLint 設定（react-hooks / react-refresh プラグイン）。
+
+### `docs/blog-post-template.md`
+- **役割**: ブログ記事を書くときのテンプレ。ファイル命名規則、frontmatter フィールド、tag例、Markdown記法、反映フロー、仕組みの解説を含む。
+- **依存**: 参照のみ。`src/posts/` に md を追加する際に開く。
+
+### `src/lib/posts.js`
+- **役割**: `src/posts/*.md` を Vite の `import.meta.glob` で一括取得し、frontmatter をパース、slug 生成、日付降順ソートして export する。`_` で始まるファイル（_README.md 等）は除外。
+- **主要**:
+  - `posts`: `{ slug, title, date, tag, excerpt, externalUrl, content }[]`（日付降順）
+  - `getPost(slug)`: slug から1件取得
+  - `formatDate(dateStr)`: `2026-04-15` → `2026年4月15日`
+- **依存**: `../posts/*.md`（glob）
+- **参照元**: `Blog.desktop.jsx`, `Blog.mobile.jsx`, `BlogPost.jsx`
+
+### `src/posts/`
+- **役割**: ブログ記事の置き場。`YYYY-MM-DD-<slug>.md` 形式のmdファイルを追加するだけでBlogに反映される。
+- **ファイル**:
+  - `_README.md`: フォルダ自体の説明（`_` プレフィックスで glob から除外される）
+  - `YYYY-MM-DD-<slug>.md`: 各記事。frontmatter (title/date/tag/excerpt/external_url) + 本文
+- **参照元**: `lib/posts.js`（glob で全件取得）

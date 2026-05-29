@@ -19,6 +19,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  max-width: none;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .logo {
@@ -26,6 +29,7 @@
   font-size: 1.5rem;
   color: var(--dark);
   letter-spacing: -0.02em;
+  margin-right: 48px;
 }
 
 .menuOverlay {

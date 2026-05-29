@@ -6,6 +6,7 @@
   position: relative;
   overflow: hidden;
   padding: 120px 0 80px;
+  background: linear-gradient(to bottom, #f7f3ee 0%, #dfe9e6 100%);
 }
 
 .bgShape {

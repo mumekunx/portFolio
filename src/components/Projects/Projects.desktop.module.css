@@ -1,17 +1,85 @@
-.projects {
-  background: var(--white);
+.projects :global(.container) {
+  max-width: none;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+.projects {
+  background: linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 深海レイヤー: 背景が暗いので見出しを明るく */
+.projects :global(.section-title) {
+  color: #eaf1f4;
+}
+
+.projects :global(.section-label) {
+  color: #cfe0e6;
+}
+
+.carousel {
+  position: relative;
+}
+
+.track {
+  display: flex;
   gap: 32px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 8px 4px 20px;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #eef4f6;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 5;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.navPrev {
+  left: -12px;
+}
+
+.navNext {
+  right: -12px;
 }
 
 .card {
+  flex: 0 0 440px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-sm);
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
@@ -26,6 +94,7 @@
 .thumbnail {
   width: 100%;
   aspect-ratio: 16 / 9;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,8 +118,11 @@
 }
 
 .body {
+  flex: 1;
   padding: 28px;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .tagRow {

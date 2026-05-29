@@ -1,5 +1,15 @@
+.skills :global(.container) {
+  max-width: none;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
 .skills {
-  background: var(--sand);
+  background: linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .grid {
@@ -11,6 +21,9 @@
 .card {
   padding: 32px 28px;
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
@@ -20,13 +33,11 @@
 }
 
 .card--sage {
-  background: linear-gradient(145deg, var(--sage-light) 0%, var(--sand) 100%);
-  border: 1.5px solid var(--sage);
+  background: linear-gradient(145deg, rgba(200, 213, 185, 0.45) 0%, rgba(255, 255, 255, 0.32) 100%);
 }
 
 .card--clay {
-  background: linear-gradient(145deg, #f5ebe6 0%, var(--sand) 100%);
-  border: 1.5px solid var(--clay-light);
+  background: linear-gradient(145deg, rgba(212, 168, 150, 0.42) 0%, rgba(255, 255, 255, 0.32) 100%);
 }
 
 .icon {

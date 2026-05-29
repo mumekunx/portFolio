@@ -1,9 +1,13 @@
 .contact {
   position: relative;
-  background: var(--dark);
+  background: linear-gradient(to bottom, #243f5e 0%, #0d1c2e 100%);
   padding: 120px 0;
   overflow: hidden;
   text-align: center;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .bgDecor1 {

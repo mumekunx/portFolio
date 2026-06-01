@@ -14,17 +14,75 @@ const languages = [
   { code: 'en', label: 'English' },
 ]
 
+// 各セクションの背景グラデの [上端色, 下端色] (RGB)
+// セクションの実CSSと一致させる必要あり
+const sectionColors = {
+  hero:     [[0xf7, 0xf3, 0xee], [0xdf, 0xe9, 0xe6]],
+  about:    [[0xdf, 0xe9, 0xe6], [0xb9, 0xd2, 0xd3]],
+  skills:   [[0xb9, 0xd2, 0xd3], [0x7b, 0xa7, 0xb5]],
+  projects: [[0x7b, 0xa7, 0xb5], [0x4a, 0x77, 0x95]],
+  blog:     [[0x4a, 0x77, 0x95], [0x24, 0x3f, 0x5e]],
+  contact:  [[0x24, 0x3f, 0x5e], [0x0d, 0x1c, 0x2e]],
+}
+
+const sectionOrder = ['hero', 'about', 'skills', 'projects', 'blog', 'contact']
+
+function lerp(a, b, t) {
+  return Math.round(a + (b - a) * t)
+}
+
+function lerpColor(c1, c2, t) {
+  return [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)]
+}
+
+// 知覚輝度（簡易）。0.5未満なら暗い背景＝白文字
+function isDarkColor([r, g, b]) {
+  const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return luma < 0.6
+}
+
 export default function NavDesktop() {
   const [scrolled, setScrolled] = useState(false)
+  const [navColor, setNavColor] = useState([0xf7, 0xf3, 0xee])
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState('ja')
   const [langOpen, setLangOpen] = useState(false)
   const langRef = useRef(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
+    const computeColor = () => {
+      const navHeight = 60 // Nav の概ねの高さ
+      const probeY = navHeight + 1 // Nav 直下のピクセル位置を判定基準にする
+      const y = window.scrollY
+
+      setScrolled(y > 40)
+
+      // 各セクションの DOM 矩形を取得し、probeY を含むセクションを見つける
+      let activeId = 'hero'
+      let progress = 0
+      for (const id of sectionOrder) {
+        const el = document.getElementById(id)
+        if (!el) continue
+        const rect = el.getBoundingClientRect()
+        if (rect.top <= probeY && rect.bottom > probeY) {
+          activeId = id
+          const h = rect.height || 1
+          progress = Math.min(1, Math.max(0, (probeY - rect.top) / h))
+          break
+        }
+      }
+
+      const colors = sectionColors[activeId] || sectionColors.hero
+      setNavColor(lerpColor(colors[0], colors[1], progress))
+    }
+
+    computeColor()
+    window.addEventListener('scroll', computeColor, { passive: true })
+    window.addEventListener('resize', computeColor)
+    return () => {
+      window.removeEventListener('scroll', computeColor)
+      window.removeEventListener('resize', computeColor)
+    }
   }, [])
 
   useEffect(() => {
@@ -42,8 +100,15 @@ export default function NavDesktop() {
 
   const currentLang = languages.find((l) => l.code === lang)
 
+  const [r, g, b] = navColor
+  const navBg = `rgba(${r}, ${g}, ${b}, 0.82)`
+  const dark = isDarkColor(navColor)
+
   return (
-    <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
+    <nav
+      className={`${styles.nav} ${scrolled ? styles.scrolled : ''} ${dark ? styles.dark : ''}`}
+      style={{ '--nav-bg': navBg }}
+    >
       <div className={`container ${styles.inner}`}>
         {/* TODO: 自分の名前のイニシャルや略称に変更 */}
         <a href="#" className={styles.logo}>About me</a>

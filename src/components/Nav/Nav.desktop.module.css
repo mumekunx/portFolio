@@ -9,10 +9,15 @@
 }
 
 .scrolled {
-  background: rgba(247, 243, 238, 0.85);
+  background: var(--nav-bg, rgba(247, 243, 238, 0.85));
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
   padding: 12px 0;
+}
+
+/* 暗い背景時はシャドウを白系に変えて境目を抑える */
+.dark.scrolled {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .inner {
@@ -30,6 +35,11 @@
   color: var(--dark);
   letter-spacing: -0.02em;
   margin-right: 48px;
+  transition: color var(--transition);
+}
+
+.dark .logo {
+  color: #eaf1f4;
 }
 
 .menuOverlay {
@@ -68,6 +78,18 @@
   color: var(--dark);
 }
 
+.dark .link {
+  color: rgba(234, 241, 244, 0.85);
+}
+
+.dark .link::after {
+  background: #eaf1f4;
+}
+
+.dark .link:hover {
+  color: #ffffff;
+}
+
 .link:hover::after {
   width: 100%;
 }
@@ -97,6 +119,15 @@
 .langBtn:hover {
   background: var(--sand-dark);
   color: var(--dark);
+}
+
+.dark .langBtn {
+  color: rgba(234, 241, 244, 0.85);
+}
+
+.dark .langBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
 }
 
 .caret {

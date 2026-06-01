@@ -1,5 +1,21 @@
 # Portfolio プロジェクト概要
 
+## 2026-05-31 — PC版 Nav の背景を「表示中セクション」と完全同期
+**立案:**
+- 前回はスクロール率全体で色補間したが、実セクションの背景色グラデと一致せず境目が見えていた。
+- 各セクションの上端色・下端色を Nav.desktop.jsx 内に定義（hero/about/skills/projects/blog/contact）。
+- スクロールごとに「Nav 直下にあるセクション」を `getBoundingClientRect` で検出、そのセクション内の進捗率で上端色↔下端色を補間し Nav 背景に適用。
+- 背景色の知覚輝度から自動で文字色（白系/黒系）を切り替え（`.dark` クラス、旧 `.overHero` を置換）。
+- 影響範囲: `Nav.desktop.jsx` / `Nav.desktop.module.css`。
+
+## 2026-05-30 21:44 — PC版 Nav の背景を深海テーマと同期
+**立案:**
+- スクロール位置に応じてNavの背景色を深海グラデの上部色(#4a7795)→下部色(#243f5e)へ線形補間する。
+- Hero最上部（scrollY=0）では透明、40pxスクロールから不透明化開始。
+- 文字・ロゴ・言語切替ボタンの色も背景に合わせて白系に変更。
+- 実装方針: `Nav.desktop.jsx` でscrollYの比率を計算 → CSSカスタムプロパティ `--nav-bg` を上書き → cssは `background: var(--nav-bg)` を参照。
+- 影響範囲: `Nav.desktop.jsx` / `Nav.desktop.module.css`。
+
 ## 2026-05-28 14:45 — Blog を md ファイルベース管理に
 **立案:**
 - `src/posts/` に md を追加するだけでブログに反映される仕組みを構築。記事本文もサイト内で表示する。

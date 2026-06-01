@@ -25,27 +25,29 @@
   position: relative;
 }
 
-/* 左右端のカードがふわっと薄くなるマスクは .track にだけ掛ける（矢印ボタンに影響させない） */
+/* 中央1枚 + 両隣チラ見え。左右の余白で最初/最後のカードも中央に寄せられる */
 .track {
   display: flex;
   gap: 32px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding: 8px 4px 20px;
+  padding: 8px 0 20px;
+  /* 各カードが中央スナップしたとき、両端カードもセンタリングできるよう左右余白を取る */
+  padding-inline: calc(50% - 240px);
   scrollbar-width: none;
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 80px,
-    #000 calc(100% - 80px),
+    #000 60px,
+    #000 calc(100% - 60px),
     transparent 100%
   );
   mask-image: linear-gradient(
     to right,
     transparent 0,
-    #000 80px,
-    #000 calc(100% - 80px),
+    #000 60px,
+    #000 calc(100% - 60px),
     transparent 100%
   );
 }
@@ -88,14 +90,14 @@
 }
 
 .card {
-  flex: 0 0 440px;
-  scroll-snap-align: start;
+  flex: 0 0 480px;
+  scroll-snap-align: center;
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
 }
 
 .card:hover {

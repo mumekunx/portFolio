@@ -25,6 +25,7 @@
   position: relative;
 }
 
+/* 左右端のカードがふわっと薄くなるマスクは .track にだけ掛ける（矢印ボタンに影響させない） */
 .track {
   display: flex;
   gap: 32px;
@@ -33,6 +34,20 @@
   scroll-behavior: smooth;
   padding: 8px 4px 20px;
   scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
 }
 
 .track::-webkit-scrollbar {

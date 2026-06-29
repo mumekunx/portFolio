@@ -11,11 +11,6 @@ const facts = [
 
 const achievements = [
   {
-    icon: '🎖',
-    title: 'NVIDIA 学生アンバサダー AIチーム 4期生',
-    sub: 'NVIDIA Student Ambassador',
-  },
-  {
     icon: '🏛',
     title: '令和8年度 近畿大学情報学部 自治会委員長',
     sub: 'Student Council President',

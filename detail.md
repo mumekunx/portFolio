@@ -8,6 +8,16 @@
 
 ---
 
+## CI/CD
+
+### `.github/workflows/deploy.yml`
+- **役割**: main ブランチへの push 時に自動ビルド→GitHub Pages デプロイを実行するワークフロー。
+- **主要**: `npm ci` → `npm run build` → `npm run deploy`（gh-pages パッケージ）
+- **依存**: `package.json` の `deploy` / `predeploy` スクリプト、`GITHUB_TOKEN`（自動提供）
+- **参照元**: GitHub Actions ランナー
+
+---
+
 ## エントリ・ルート
 
 ### `src/main.jsx`

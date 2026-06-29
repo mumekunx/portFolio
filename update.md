@@ -1,4 +1,14 @@
 # Portfolio プロジェクト概要
+## 2026-06-29 09:00 — GitHub Actions による自動デプロイ設定
+**立案:**
+- main push 時に自動で GitHub Pages へデプロイする CI/CD を追加。
+- 既存の `npm run deploy`（gh-pages パッケージ）をそのまま CI でも実行する方針。
+- `GITHUB_TOKEN` を使用するため追加シークレット設定は不要。
+- 影響範囲: `.github/workflows/deploy.yml`（新規）
+
+**完了:**
+- `.github/workflows/deploy.yml` を作成。
+- detail.md / update.md を更新。
 
 ## 2026-05-31 — PC版 Nav の背景を「表示中セクション」と完全同期
 **立案:**

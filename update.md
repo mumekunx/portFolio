@@ -21,6 +21,8 @@
 
 **完了** ✅
 - 学習価値の高いパターンとして、`teach.md` に追加を検討すべき候補章: 「React.lazy + Suspense によるコード分割(ルートベースの遅延ロード)」「useSyncExternalStore で外部ストア(matchMedia など)を安全に購読する方法」。
+- main マージ後、GitHub Pages デプロイが失敗し続けていたことが判明。6/29 のワークフロー追加以降、gh-pages の認証エラー `ProcessError: fatal: could not read Username for 'https://github.com'` で一度も成功していなかった。
+- `deploy.yml` の Deploy ステップで `https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git` を明示したトークン付きリモート URL を渡すよう修正し、認証エラーを解消。
 
 ## 2026-06-29 09:00 — GitHub Actions による自動デプロイ設定
 **立案:**

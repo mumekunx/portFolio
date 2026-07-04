@@ -26,6 +26,7 @@
   - `Footer.mobile.module.css` の背景が `var(--dark)`(#2a2a2a、グレー寄り)で、Contact の終端色 `#0d1c2e`(紺)と食い違い継ぎ目が生じていたため `#0d1c2e` に統一(`Footer.desktop.module.css` は元から `#0d1c2e`)。
   - `BlogPost.module.css` の `.article.mobile { padding-top: 24px; }`(旧 `MobileRouter` の `.page` ラッパーが確保していた Nav ぶんの余白を前提にした上書き)を削除し忘れていたため、記事詳細ページの戻るボタン・ヘッダが固定 Nav の下に隠れる不具合があった → ルールごと削除して修正。
 - **検証**: `npm run lint` / `npm run build` いずれも成功。加えて `npx playwright screenshot` で 390×844 のモバイルビューポートを headless Chromium で実機的に確認(Hero→About→Skills→Projects→Blog→Contact→Footer の背景グラデ連続性、Nav の色同期、ハンバーガーメニューの開閉とリンク遷移、BlogPost mobile の戻るボタン表示)。上記2件の不具合はこの確認で発見・修正した。
+- **追記(実機確認後)**: Nav のハンバーガーメニューと内容が重複するため、Hero.mobile 内に残っていた旧ランディングページ由来の About/Skills/Projects/Blog セクションリンク一覧(`<nav>`)を削除。中央の破線アバター枠は維持。`Hero.mobile.module.css` の `.nav`/`.navItem`/`@keyframes navItemIn`(他で未使用)も削除。`.hero` は `min-height: 100svh` + `justify-content: center` で中央揃えのため、要素削減後もレイアウトが間延びすることはなく追加のCSS調整は不要と確認。`npx eslint src/components/Hero` / `npm run build` いずれも成功。
 
 ## 2026-07-05 01:26 — セクション間の余白を詰める
 **立案:**

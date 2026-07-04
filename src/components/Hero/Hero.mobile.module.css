@@ -94,38 +94,3 @@
   margin-inline: auto;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  margin-top: 12px;
-}
-
-@keyframes navItemIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.navItem {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  color: var(--dark);
-  text-decoration: none;
-  padding: 0 4px 4px;
-  border-bottom: 1.5px solid var(--dark);
-  line-height: 1.2;
-  opacity: 0;
-  animation: navItemIn 0.6s ease both;
-  transition: color var(--transition), border-color var(--transition), transform var(--transition);
-}
-
-.navItem:hover {
-  color: var(--clay);
-  border-bottom-color: var(--clay);
-}
-
-.navItem:active {
-  transform: scale(0.96);
-}

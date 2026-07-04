@@ -94,8 +94,8 @@
 - **役割**: `useIsMobile()` で `HeroDesktop` / `HeroMobile` を振り分け。
 
 ### `Hero.mobile.jsx`
-- **役割**: 1 ページスクロールの先頭セクション。名前 "Iwai Shuto"・キャッチコピー、背景シェイプ2枚（CSS アニメーションのみ、JS 側の駆動なし）、About/Skills/Projects/Blog への `#hash` リンク（アンカースクロールで該当セクションへ遷移）。
-- **主要**: `HeroMobile()`、内部定数 `navItems`
+- **役割**: 1 ページスクロールの先頭セクション。名前 "Iwai Shuto"・キャッチコピー、背景シェイプ2枚（CSS アニメーションのみ、JS 側の駆動なし）、中央の破線アバター枠。旧ランディングページ由来の About/Skills/Projects/Blog への `#hash` リンク一覧はナビのハンバーガーメニューと重複するため削除済み（Nav.mobile 側に同等の導線あり）。
+- **主要**: `HeroMobile()`
 - **依存**: `Hero.mobile.module.css`
 
 ### `Hero.desktop.jsx`

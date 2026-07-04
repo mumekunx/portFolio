@@ -1,12 +1,5 @@
 import styles from './Hero.mobile.module.css'
 
-const navItems = [
-  { hash: 'about', label: 'About' },
-  { hash: 'skills', label: 'Skills' },
-  { hash: 'projects', label: 'Projects' },
-  { hash: 'blog', label: 'Blog' },
-]
-
 export default function HeroMobile() {
   return (
     <section className={styles.hero} id="hero">
@@ -25,19 +18,6 @@ export default function HeroMobile() {
             面白いものをかたちにしていく。
           </p>
         </div>
-
-        <nav className={styles.nav}>
-          {navItems.map((item, i) => (
-            <a
-              key={item.hash}
-              href={`#${item.hash}`}
-              className={styles.navItem}
-              style={{ animationDelay: `${0.4 + i * 0.08}s` }}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
       </div>
     </section>
   )

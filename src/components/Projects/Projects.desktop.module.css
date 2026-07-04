@@ -56,10 +56,16 @@
   display: none;
 }
 
+.navRow {
+  width: min(480px, calc(100vw - 80px));
+  margin: 0 auto;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .navBtn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -75,20 +81,11 @@
   color: var(--dark);
   font-size: 1.25rem;
   cursor: pointer;
-  z-index: 5;
-  transition: background var(--transition), transform var(--transition);
+  transition: background var(--transition);
 }
 
 .navBtn:hover {
   background: rgba(255, 255, 255, 0.75);
-}
-
-.navPrev {
-  left: -12px;
-}
-
-.navNext {
-  right: -12px;
 }
 
 .card {
@@ -144,6 +141,10 @@
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.bodyNoLinks {
+  background: var(--white);
 }
 
 .tagRow {

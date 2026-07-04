@@ -17,18 +17,10 @@ export default function ProjectsDesktop() {
         <h2 className="section-title">Selected Works</h2>
 
         <div className={styles.carousel}>
-          <button
-            type="button"
-            className={`${styles.navBtn} ${styles.navPrev}`}
-            onClick={() => scroll(-1)}
-            aria-label="前のプロジェクト"
-          >
-            ←
-          </button>
-
           <div className={styles.track} ref={trackRef}>
           {loopedProjects.map((p, i) => {
             const isDuplicate = i < projects.length || i >= projects.length * 2
+            const hasLinks = Boolean(p.github || p.demo)
             return (
             <article
               key={`${p.id}-${i}`}
@@ -40,7 +32,7 @@ export default function ProjectsDesktop() {
                 <span className={styles.thumbLabel}>{p.tag}</span>
               </div>
 
-              <div className={styles.body}>
+              <div className={`${styles.body} ${!hasLinks ? styles.bodyNoLinks : ''}`}>
                 <div className={styles.tagRow}>
                   <span className={styles.tag}>{p.tag}</span>
                   {p.inProgress && <span className={styles.badge}>In Progress</span>}
@@ -54,44 +46,56 @@ export default function ProjectsDesktop() {
                   ))}
                 </ul>
 
-                <div className={styles.links}>
-                  {p.github && (
-                    <a
-                      href={p.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.linkBtn}
-                      tabIndex={isDuplicate ? -1 : undefined}
-                    >
-                      GitHub
-                    </a>
-                  )}
-                  {p.demo && (
-                    <a
-                      href={p.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
-                      tabIndex={isDuplicate ? -1 : undefined}
-                    >
-                      Live Demo ↗
-                    </a>
-                  )}
-                </div>
+                {hasLinks && (
+                  <div className={styles.links}>
+                    {p.github && (
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.linkBtn}
+                        tabIndex={isDuplicate ? -1 : undefined}
+                      >
+                        GitHub
+                      </a>
+                    )}
+                    {p.demo && (
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
+                        tabIndex={isDuplicate ? -1 : undefined}
+                      >
+                        Live Demo ↗
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </article>
             )
           })}
           </div>
 
-          <button
-            type="button"
-            className={`${styles.navBtn} ${styles.navNext}`}
-            onClick={() => scroll(1)}
-            aria-label="次のプロジェクト"
-          >
-            →
-          </button>
+          <div className={styles.navRow}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => scroll(-1)}
+              aria-label="前のプロジェクト"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => scroll(1)}
+              aria-label="次のプロジェクト"
+            >
+              →
+            </button>
+          </div>
         </div>
 
         <div className={styles.dots} aria-hidden="true">

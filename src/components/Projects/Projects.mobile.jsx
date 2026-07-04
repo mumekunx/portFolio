@@ -20,6 +20,7 @@ export default function ProjectsMobile() {
           <div className={styles.track} ref={trackRef}>
           {loopedProjects.map((p, i) => {
             const isDuplicate = i < projects.length || i >= projects.length * 2
+            const hasLinks = Boolean(p.github || p.demo)
             return (
             <article
               key={`${p.id}-${i}`}
@@ -31,7 +32,7 @@ export default function ProjectsMobile() {
                 <span className={styles.thumbLabel}>{p.tag}</span>
               </div>
 
-              <div className={styles.body}>
+              <div className={`${styles.body} ${!hasLinks ? styles.bodyNoLinks : ''}`}>
                 <div className={styles.tagRow}>
                   <span className={styles.tag}>{p.tag}</span>
                   {p.inProgress && <span className={styles.badge}>In Progress</span>}
@@ -45,30 +46,32 @@ export default function ProjectsMobile() {
                   ))}
                 </ul>
 
-                <div className={styles.links}>
-                  {p.github && (
-                    <a
-                      href={p.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.linkBtn}
-                      tabIndex={isDuplicate ? -1 : undefined}
-                    >
-                      GitHub
-                    </a>
-                  )}
-                  {p.demo && (
-                    <a
-                      href={p.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
-                      tabIndex={isDuplicate ? -1 : undefined}
-                    >
-                      Live Demo ↗
-                    </a>
-                  )}
-                </div>
+                {hasLinks && (
+                  <div className={styles.links}>
+                    {p.github && (
+                      <a
+                        href={p.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.linkBtn}
+                        tabIndex={isDuplicate ? -1 : undefined}
+                      >
+                        GitHub
+                      </a>
+                    )}
+                    {p.demo && (
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
+                        tabIndex={isDuplicate ? -1 : undefined}
+                      >
+                        Live Demo ↗
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             </article>
             )

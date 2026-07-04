@@ -14,8 +14,9 @@
 - `Projects.mobile.jsx` を PC 版と同じ 3 セット複製(`loopedProjects`)・`isDuplicate` 判定(`aria-hidden`/リンク `tabIndex=-1`)を持つカルーセルに書き換え。`useInfiniteCarousel(projects.length, 20)` を使用。← →ボタンはカルーセル下の `.navRow` にまとめて配置(PC 版はカルーセル左右端に絶対配置だが、モバイルは指の届く位置を優先しレイアウトを変えた)。
 - `Projects.mobile.module.css`: `.grid` を `.carousel`/`.track`/`.navRow`/`.navBtn` に置き換え。`.card` は `flex: 0 0 85vw; max-width: 340px; scroll-snap-align: center;` に変更。`.track` は `overflow-x: hidden; touch-action: pan-y; scroll-snap-type: x mandatory;`(スワイプでは動かず、ボタンからの `scrollTo`/`scrollBy` はプログラム的にスクロールできるため機能する)。左右チラ見え強調のため PC 版と同様の `mask-image` フェードも追加。`.navBtn` は 48×48px(タップ target 44px 以上を満たす)。`.body`/`.thumbnail` 等の見た目スタイルは既存のまま変更なし。
 - 検証: `npx eslint src/components/Projects src/hooks` エラー0件。`npm run build` 成功(527 modules transformed)。Playwright は `node_modules` に未インストールのためヘッドレスブラウザでの実機確認は省略(指示どおり)。
+- **追記(実機確認後)**: スマホ実機で「横幅が足りず本文が窮屈で使い物にならない」との報告を受け、`Projects.mobile.module.css` を1画面1カード表示に修正 — `.card` を `flex: 0 0 85vw; max-width: 340px` → `flex: 0 0 92vw; max-width: 480px` に拡大、左右チラ見え用の端フェード(`mask-image`/`-webkit-mask-image`)を削除、`.body` の padding を 28px → 20px に縮小して本文の実効幅を確保、`.track` の `padding-inline` を `calc(50% - min(46vw, 240px))` に更新。gap 20px は変更なしのため `Projects.mobile.jsx` 側の `useInfiniteCarousel(projects.length, 20)` もそのまま(一致を確認)。`overflow-x: hidden` + `touch-action: pan-y` のスワイプ無効は維持。eslint / `npm run build` とも成功を再確認。
 
-
+## 2026-07-05 01:46 — スマホ版をPC版と同じ1ページスクロール構成に統一
 **立案:**
 - 依頼内容: スマホ版の表示構成を PC 版と同じ「1ページ縦スクロール」に統一する。現状はスマホのみ `App.jsx` が `MobileRouter` を描画し、Hero をランディング(`body.home-locked` でスクロール固定・Footer 非表示)、`#about` 等のハッシュで各セクションを「別ページ」として表示(戻るボタン付き)する構成になっている。各コンポーネントの mobile バリアント(縦積みレイアウト等)自体は維持し、ルーティング構造だけを PC 同様の1ページスクロールに統一する。
 - 実装方針:

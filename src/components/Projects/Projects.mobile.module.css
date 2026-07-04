@@ -15,7 +15,7 @@
   position: relative;
 }
 
-/* 中央1枚 + 両隣チラ見え。指の横スワイプでは動かず(overflow-x: hidden + touch-action: pan-y)、
+/* 1画面1カード表示。指の横スワイプでは動かず(overflow-x: hidden + touch-action: pan-y)、
    ← → ボタンからの scrollTo/scrollBy のみで送る(iOS の端スワイプ「戻る」ジェスチャーとの競合回避) */
 .track {
   display: flex;
@@ -25,23 +25,9 @@
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   padding: 8px 0 4px;
-  /* カードが中央スナップしたとき、両端カードもセンタリングできるよう左右余白を取る */
-  padding-inline: calc(50% - min(42.5vw, 170px));
+  /* カードが中央スナップしたとき、各カードをセンタリングできるよう左右余白を取る */
+  padding-inline: calc(50% - min(46vw, 240px));
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 24px,
-    #000 calc(100% - 24px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 24px,
-    #000 calc(100% - 24px),
-    transparent 100%
-  );
 }
 
 .track::-webkit-scrollbar {
@@ -78,8 +64,8 @@
 }
 
 .card {
-  flex: 0 0 85vw;
-  max-width: 340px;
+  flex: 0 0 92vw;
+  max-width: 480px;
   scroll-snap-align: center;
   display: flex;
   flex-direction: column;
@@ -123,7 +109,7 @@
 }
 
 .body {
-  padding: 28px;
+  padding: 20px;
   background: var(--white);
 }
 

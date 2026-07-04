@@ -134,7 +134,7 @@
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。表示データは `src/data/projects.js` の `projects` を desktop/mobile 両方から import。
 - **主要（`Projects.desktop.jsx` / `Projects.mobile.jsx` 共通）**: どちらも 3セット（`[...projects, ...projects, ...projects]` = `loopedProjects`）を並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル(共通ロジックは `src/hooks/useInfiniteCarousel.js` に抽出、後述)。前後の複製セット（`isDuplicate = i < projects.length || i >= projects.length * 2`）のカードには `aria-hidden="true"`、内部リンクには `tabIndex={-1}` を付与し、スクリーンリーダー/キーボード操作が複製カードに触れないようにしている。
   - **desktop**: カード幅固定 480px、← →ボタンはカルーセル左右端に絶対配置、`.track` は `overflow-x: auto`(指/トラックパッドでのドラッグスクロール可)。
-  - **mobile**: カード幅 `85vw`(`max-width: 340px`)で中央1枚を主役に左右チラ見え。`.track` は `overflow-x: hidden` + `touch-action: pan-y` にして**指の横スワイプでは動かない**ようにし(iOS Safari の端スワイプ「戻る」ジェスチャーとの衝突回避)、← →ボタン(48×48px)のみで送る。ボタンからの `scrollTo`/`scrollBy` は `overflow: hidden` でもプログラム的に機能するため操作は可能。
+  - **mobile**: カード幅 `92vw`(`max-width: 480px`)の1画面1カード表示(当初は 85vw + 左右チラ見え + 端フェードマスクだったが、実機で本文が窮屈だったため拡大しマスクも削除)。`.body` の padding は 20px(desktop の 28px より詰めて本文の実効幅を確保)。`.track` は `overflow-x: hidden` + `touch-action: pan-y` にして**指の横スワイプでは動かない**ようにし(iOS Safari の端スワイプ「戻る」ジェスチャーとの衝突回避)、← →ボタン(48×48px)のみで送る。ボタンからの `scrollTo`/`scrollBy` は `overflow: hidden` でもプログラム的に機能するため操作は可能。
 - **背景**: `.projects` は desktop/mobile 共通で `linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%)`（暗色化していくため「深海レイヤー」として `.projects :global(.section-title)` / `.projects :global(.section-label)` を明るい色に上書き。カード本体は `.body` が不透明な白背景のため影響なし）。
 
 ### `src/components/Blog/`

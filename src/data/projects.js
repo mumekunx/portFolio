@@ -6,7 +6,7 @@ export const projects = [
     description: '「今のわがまま」に合わせて飲食店候補がリアルタイムで変わる地図アプリ。スライダーで価格・距離・雰囲気などの優先度を直感操作。2026年2月、チーム4人・1週間で開発。',
     tech: ['React', 'TypeScript', 'FastAPI', 'Python', 'Supabase', 'MapLibre GL JS'],
     github: 'https://github.com/kc3hack/2026_team25',
-    demo: 'https://www.youtube.com/watch?v=fbzGp0XJGq8',
+    demo: 'https://frontend-pi-rosy-20.vercel.app/',
     accent: 'sage',
     inProgress: false,
   },

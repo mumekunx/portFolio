@@ -6,7 +6,6 @@
 
 .about {
   background: linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%);
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;

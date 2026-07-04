@@ -1,4 +1,17 @@
 # Portfolio プロジェクト概要
+## 2026-07-05 01:26 — セクション間の余白を詰める
+**立案:**
+- 依頼内容: セクションの合間の余白が大きすぎるので詰めてほしい(Skills と Projects の間に画面の半分以上の空白がある、とのスクリーンショット付き報告)。
+- 原因: 各セクションの CSS モジュールにある `min-height: 100svh` により、コンテンツ量が少ないセクション(特に Skills)が画面の高さいっぱいに引き伸ばされ、下側に空白ができている。共通の `.section { padding: 100px 0; }`(`src/index.css`)による上下 100px の余白はそのまま維持する。
+- 実装方針: デスクトップ用モジュールのうち、ファーストビューの Hero と最終セクションの Contact を除く About / Skills / Projects / Blog の4ファイルから `min-height: 100svh` を削除する。各ファイルの `display: flex; flex-direction: column; justify-content: center;` は高さを引き伸ばさない限り無害なため残し、削除に伴う内部要素(height: 100% 依存や垂直センタリング崩れ)の有無を確認してから実施する。mobile 用 module.css はページ遷移型で画面を満たす設計のため対象外。
+- 影響範囲: `src/components/About/About.desktop.module.css`, `src/components/Skills/Skills.desktop.module.css`, `src/components/Projects/Projects.desktop.module.css`, `src/components/Blog/Blog.desktop.module.css`, `update.md`, `tasks/todo.md`(必要なら `detail.md`)
+
+**完了** ✅
+- About / Skills / Projects / Blog の各 `*.desktop.module.css` から `min-height: 100svh;` を削除(いずれもルートの `.about` / `.skills` / `.projects` / `.blog` セレクタ)。Hero・Contact は対象外のため未変更。mobile 用 module.css も未変更。
+- 削除に伴う崩れがないか確認: 各ファイルに残る `display: flex; flex-direction: column; justify-content: center;` は、高さが内容に合わせて自然に決まる(引き伸ばされない)状態では無害なためそのまま維持。内部要素に親の高さへ依存する `height: 100%` 等は無し(About の `.photo` は `.photoInner` の `aspect-ratio: 4/3` に依存しており `.about` の高さとは無関係)。Blog の `.comingSoon { min-height: 220px; }` はセクション自体ではなく内部の「準備中」表示用の別指定なのでそのまま残した。Nav.desktop.jsx の背景色同期は各セクションの `getBoundingClientRect()` を都度参照する実装のため、高さ変更後も追加対応不要。
+- 検証: `npm run build` 成功(529 modules transformed、警告・エラーなし)。
+- detail.md: `min-height`/`100svh` の記載は mobile 専用の `body.home-locked` の説明のみで、今回変更した About/Skills/Projects/Blog の高さ仕様には言及していなかったため更新不要と判断。
+
 ## 2026-07-05 01:22 — Wagamama Gourmet の Live Demo URL 変更
 **立案:** `src/data/projects.js` の Wagamama Gourmet(id: 1)の `demo` を YouTube URL から Vercel のデプロイ先 `https://frontend-pi-rosy-20.vercel.app/` に変更。影響範囲はデータファイル1件のみ。
 

@@ -1,5 +1,15 @@
 # todo.md
 
+## 2026-07-05 セクション間の余白を詰める
+- [x] update.md に立案エントリ追記
+- [x] About.desktop.module.css から min-height: 100svh を削除
+- [x] Skills.desktop.module.css から min-height: 100svh を削除
+- [x] Projects.desktop.module.css から min-height: 100svh を削除
+- [x] Blog.desktop.module.css から min-height: 100svh を削除
+- [x] 削除に伴う内部要素の崩れがないか確認(height:100%依存・垂直センタリング等)
+- [x] update.md に完了追記、detail.md 整合確認
+- [x] npm run build で成功確認
+
 ## 2026-07-05 About セクションに本人写真を追加
 - [x] src/assets/about-photo.jpg に写真を配置
 - [x] About.desktop.jsx / About.mobile.jsx のプレースホルダーを <img> に差し替え

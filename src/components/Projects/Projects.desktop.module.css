@@ -6,7 +6,6 @@
 
 .projects {
   background: linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%);
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;

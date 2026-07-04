@@ -1,4 +1,27 @@
 # Portfolio プロジェクト概要
+## 2026-07-05 00:15 — サイト全体改善(SEO/パフォーマンス/a11y/データ一元化)
+**立案:**
+- サイト全体の改善点レビューで挙がった項目のうち、ユーザー素材が不要なものを Sonnet サブエージェント並列で実装する。
+- 計画概要(4エージェント並列):
+  1. SEO/meta: index.html に title・meta description・OGP・Twitter カード追加、BlogPost で document.title を記事タイトルに変更
+  2. パフォーマンス/ルーティング: BlogPost を React.lazy で遅延ロード、blogSlug 解析を useHashRoute に一元化、Hero の rAF アニメを CSS keyframes 化
+  3. データ一元化+a11y: projects/socials/skills/about データを src/data/ に切り出し desktop/mobile 両方から import、カルーセル複製セットに aria-hidden、絵文字アイコンに aria-hidden
+  4. グローバルCSS/Nav: prefers-reduced-motion 対応、ハンバーガーに aria-expanded、gh-pages を devDependencies へ移動
+- 影響範囲: index.html, src/App.jsx, src/components/**(Hero/Nav/Projects/Contact/Skills/About/Blog/BlogPost/MobileRouter), src/hooks/useHashRoute.js, src/index.css, src/data/(新規), package.json
+- 事前作業として重複ファイル「〜 2.*」16個を削除済み(全て古いコピーであることを検証済み)。作業ブランチ: feature/20260705-0014-site-improvements
+
+**進捗:**
+- エージェント1(SEO/meta): `index.html` に `<title>Iwai Shuto | Portfolio</title>`・meta description・OGP(`og:image` は TODO のまま)・`twitter:card` を追加。`BlogPost.jsx` は記事表示中のみ `document.title` を記事タイトルに書き換え、アンマウント時に元のタイトルへ復元。
+- エージェント2(パフォーマンス/ルーティング): `App.jsx` / `MobileRouter.jsx` の `BlogPost` を `React.lazy` + `Suspense` 化し、記事詳細を開いたときだけ該当チャンクを読み込むように変更(初期バンドル 567KB → 237KB、BlogPost チャンクは 322KB で記事閲覧時のみ取得)。`blogSlug` の解析(`#blog/<slug>` 判定)を `useHashRoute.js` に一元化し、同フックが `{ hash, navigate, reset, blogSlug }` を返すよう変更。`Hero.desktop.jsx` / `Hero.mobile.jsx` の `requestAnimationFrame` 常時アニメを削除し、CSS `@keyframes drift`(`morph` と併用、±15px/±12px・20秒ループ)に置換。
+- エージェント3(データ一元化+a11y): `src/data/projects.js`・`src/data/socials.jsx`・`src/data/skills.js`・`src/data/about.js` を新規作成し、Projects/Contact/Skills/About の desktop・mobile 計8コンポーネントから import する形に変更(desktop/mobile 間のデータ食い違いは事前調査で無かったことを確認済み)。`Projects.desktop.jsx` のカルーセル複製セット(3セット中1・3セット目、`isDuplicate` 判定)に `aria-hidden` + リンクの `tabIndex={-1}` を付与。Skills/About の装飾絵文字 `span` に `aria-hidden="true"` を付与。
+- エージェント4(グローバルCSS/Nav): `index.css` に `@media (prefers-reduced-motion: reduce)` ブロックを追加(アニメーション/トランジションを実質無効化、`.fade-in` は即表示)。`Nav.desktop.jsx` / `Nav.mobile.jsx` のハンバーガーボタンに `aria-expanded`、言語ドロップダウンに `Escape` キーで閉じる処理を追加、`isDarkColor` のコメント誤りを修正。`package.json` の `gh-pages` を `dependencies` から `devDependencies` へ移動。
+- 追加修正: `useMediaQuery.js` の既存 lint エラー(`react-hooks/set-state-in-effect`)を、`useState` + `useEffect` 購読方式から `useSyncExternalStore` ベースの実装に変更して解消。`useIsMobile()` は従来どおり `useMediaQuery('(max-width: 768px)')` のショートカット。
+- 事前クリーンアップ: 「〜 2.md」等の重複ファイル16個を検証のうえ削除。`node_modules` 破損(`micromark-extension-gfm-footnote` の lib 欠損)をクリーン再インストールで解消。
+- 検証: `npm run build` 成功。ESLint は `useMediaQuery` 修正後 0 件見込み。
+
+**完了** ✅
+- 学習価値の高いパターンとして、`teach.md` に追加を検討すべき候補章: 「React.lazy + Suspense によるコード分割(ルートベースの遅延ロード)」「useSyncExternalStore で外部ストア(matchMedia など)を安全に購読する方法」。
+
 ## 2026-06-29 09:00 — GitHub Actions による自動デプロイ設定
 **立案:**
 - main push 時に自動で GitHub Pages へデプロイする CI/CD を追加。

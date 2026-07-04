@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
@@ -7,6 +8,16 @@ import styles from './BlogPost.module.css'
 
 export default function BlogPost({ slug, variant = 'desktop', onBack }) {
   const post = getPost(slug)
+
+  useEffect(() => {
+    if (!post) return
+
+    document.title = `${post.title} | Iwai Shuto`
+
+    return () => {
+      document.title = 'Iwai Shuto | Portfolio'
+    }
+  }, [post])
 
   if (!post) {
     return (

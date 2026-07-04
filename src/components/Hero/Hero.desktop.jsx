@@ -1,28 +1,9 @@
-import { useEffect, useRef } from 'react'
 import styles from './Hero.desktop.module.css'
 
 export default function HeroDesktop() {
-  const shapeRef = useRef(null)
-
-  useEffect(() => {
-    let frame
-    let t = 0
-    const animate = () => {
-      t += 0.003
-      if (shapeRef.current) {
-        const x = 50 + 15 * Math.sin(t)
-        const y = 50 + 15 * Math.cos(t * 0.7)
-        shapeRef.current.style.transform = `translate(${x - 50}px, ${y - 50}px)`
-      }
-      frame = requestAnimationFrame(animate)
-    }
-    frame = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frame)
-  }, [])
-
   return (
     <section className={styles.hero} id="hero">
-      <div className={styles.bgShape} ref={shapeRef} />
+      <div className={styles.bgShape} />
       <div className={styles.bgShapeAlt} />
 
       <div className={`container ${styles.content}`}>

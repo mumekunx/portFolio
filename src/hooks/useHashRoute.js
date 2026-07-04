@@ -20,5 +20,8 @@ export function useHashRoute() {
     setHash('')
   }
 
-  return { hash, navigate, reset }
+  // #blog/<slug> なら記事詳細
+  const blogSlug = hash.startsWith('blog/') ? hash.slice('blog/'.length) : null
+
+  return { hash, navigate, reset, blogSlug }
 }

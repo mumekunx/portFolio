@@ -40,6 +40,15 @@ export default function NavMobile() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  useEffect(() => {
+    if (!langOpen) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setLangOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [langOpen])
+
   const currentLang = languages.find((l) => l.code === lang)
 
   return (
@@ -93,6 +102,7 @@ export default function NavMobile() {
           className={styles.burger}
           onClick={() => setOpen(!open)}
           aria-label="メニュー"
+          aria-expanded={open}
         >
           <span className={open ? styles.burgerLineTop : ''} />
           <span className={open ? styles.burgerLineMid : ''} />

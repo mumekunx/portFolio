@@ -1,11 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import About from './components/About'
 import Skills from './components/Skills'
 import Projects from './components/Projects'
 import Blog from './components/Blog'
-import BlogPost from './components/BlogPost'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import MobileRouter from './components/MobileRouter'
@@ -13,12 +12,11 @@ import { useIsMobile } from './hooks/useMediaQuery'
 import { useHashRoute } from './hooks/useHashRoute'
 import './index.css'
 
+const BlogPost = lazy(() => import('./components/BlogPost'))
+
 function App() {
   const isMobile = useIsMobile()
-  const { hash, navigate } = useHashRoute()
-
-  // #blog/<slug> なら記事詳細
-  const blogSlug = hash.startsWith('blog/') ? hash.slice('blog/'.length) : null
+  const { blogSlug, navigate } = useHashRoute()
 
   useEffect(() => {
     if (blogSlug) {
@@ -43,7 +41,9 @@ function App() {
       <Nav />
       <main>
         {blogSlug ? (
-          <BlogPost slug={blogSlug} variant="desktop" onBack={() => navigate('blog')} />
+          <Suspense fallback={null}>
+            <BlogPost slug={blogSlug} variant="desktop" onBack={() => navigate('blog')} />
+          </Suspense>
         ) : (
           <>
             <Hero />

@@ -1,40 +1,6 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { categories } from '../../data/skills'
 import styles from './Skills.desktop.module.css'
-
-const categories = [
-  {
-    icon: '🖥',
-    title: 'Frontend / Web',
-    color: 'sage',
-    items: [
-      'JavaScript', 'TypeScript', 'React', 'HTML / CSS', 'Vite',
-    ],
-  },
-  {
-    icon: '📱',
-    title: 'Mobile / App',
-    color: 'clay',
-    items: [
-      'Swift', 'Dart', 'Flutter',
-    ],
-  },
-  {
-    icon: '⚙️',
-    title: 'Language',
-    color: 'sage',
-    items: [
-      'Python', 'Java',
-    ],
-  },
-  {
-    icon: '🛠',
-    title: 'Tools',
-    color: 'clay',
-    items: [
-      'Git / GitHub', 'VS Code', 'Xcode', 'Claude', 'Cursor',
-    ],
-  },
-]
 
 export default function SkillsDesktop() {
   useScrollReveal()
@@ -51,7 +17,7 @@ export default function SkillsDesktop() {
               key={cat.title}
               className={`${styles.card} ${styles[`card--${cat.color}`]} fade-in fade-in-delay-${i + 1}`}
             >
-              <span className={styles.icon}>{cat.icon}</span>
+              <span className={styles.icon} aria-hidden="true">{cat.icon}</span>
               <h3 className={styles.cardTitle}>{cat.title}</h3>
               <ul className={styles.items}>
                 {cat.items.map((item) => (

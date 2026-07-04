@@ -18,9 +18,17 @@
   transform: translateY(-50%);
   background: radial-gradient(ellipse, var(--sage-light) 0%, transparent 70%);
   border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  animation: morph 10s ease-in-out infinite;
+  animation: morph 10s ease-in-out infinite, drift 20s ease-in-out infinite;
   opacity: 0.6;
   pointer-events: none;
+}
+
+@keyframes drift {
+  0% { transform: translateY(-50%) translate(0, 0); }
+  25% { transform: translateY(-50%) translate(15px, -8px); }
+  50% { transform: translateY(-50%) translate(2px, 15px); }
+  75% { transform: translateY(-50%) translate(-15px, -5px); }
+  100% { transform: translateY(-50%) translate(0, 0); }
 }
 
 .bgShapeAlt {

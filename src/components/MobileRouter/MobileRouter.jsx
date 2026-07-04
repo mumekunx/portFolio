@@ -1,13 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useHashRoute } from '../../hooks/useHashRoute'
 import Hero from '../Hero'
 import About from '../About'
 import Skills from '../Skills'
 import Projects from '../Projects'
 import Blog from '../Blog'
-import BlogPost from '../BlogPost'
 import Contact from '../Contact'
 import styles from './MobileRouter.module.css'
+
+const BlogPost = lazy(() => import('../BlogPost'))
 
 const routes = {
   about: About,
@@ -18,11 +19,8 @@ const routes = {
 }
 
 export default function MobileRouter() {
-  const { hash, reset, navigate } = useHashRoute()
+  const { hash, reset, navigate, blogSlug } = useHashRoute()
   const isHome = !hash || hash === 'hero'
-
-  // #blog/<slug> なら記事詳細
-  const blogSlug = hash.startsWith('blog/') ? hash.slice('blog/'.length) : null
 
   // Scroll to top whenever the route changes
   useEffect(() => {
@@ -54,7 +52,9 @@ export default function MobileRouter() {
             <span>Blog</span>
           </button>
         </div>
-        <BlogPost slug={blogSlug} variant="mobile" />
+        <Suspense fallback={null}>
+          <BlogPost slug={blogSlug} variant="mobile" />
+        </Suspense>
       </div>
     )
   }

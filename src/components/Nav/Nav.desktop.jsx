@@ -35,7 +35,7 @@ function lerpColor(c1, c2, t) {
   return [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)]
 }
 
-// 知覚輝度（簡易）。0.5未満なら暗い背景＝白文字
+// 知覚輝度（簡易）。0.6未満なら暗い背景＝白文字
 function isDarkColor([r, g, b]) {
   const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
   return luma < 0.6
@@ -98,6 +98,15 @@ export default function NavDesktop() {
     return () => document.removeEventListener('mousedown', onClick)
   }, [])
 
+  useEffect(() => {
+    if (!langOpen) return
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setLangOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [langOpen])
+
   const currentLang = languages.find((l) => l.code === lang)
 
   const [r, g, b] = navColor
@@ -158,6 +167,7 @@ export default function NavDesktop() {
           className={styles.burger}
           onClick={() => setOpen(!open)}
           aria-label="メニュー"
+          aria-expanded={open}
         >
           <span className={open ? styles.burgerLineTop : ''} />
           <span className={open ? styles.burgerLineMid : ''} />

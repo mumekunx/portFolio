@@ -1,32 +1,6 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { facts, achievements } from '../../data/about'
 import styles from './About.desktop.module.css'
-
-const facts = [
-  { label: 'University', value: '近畿大学' },
-  { label: 'Faculty', value: '情報学部 情報学科' },
-  { label: 'Year', value: '2回生' },
-  { label: 'GPA', value: '3.51' },
-  { label: 'Location', value: '大阪' },
-]
-
-const achievements = [
-  {
-    icon: '🏛',
-    title: '令和8年度 近畿大学情報学部 自治会委員長',
-    sub: 'Student Council President',
-  },
-  {
-    icon: '🚀',
-    title: '学生団体 "CYPR" 立ち上げ中',
-    sub: 'Founding Member · In Progress',
-    inProgress: true,
-  },
-  {
-    icon: '🎪',
-    title: '生駒祭にてアプリを実運用、来場者 1,000 人が利用',
-    sub: 'Kinki Univ. Campus Festival 2025',
-  },
-]
 
 export default function AboutDesktop() {
   useScrollReveal()
@@ -66,7 +40,7 @@ export default function AboutDesktop() {
             <ul className={`${styles.achievements} fade-in fade-in-delay-4`}>
               {achievements.map(({ icon, title, sub, inProgress }) => (
                 <li key={title} className={styles.achievement}>
-                  <span className={styles.achieveIcon}>{icon}</span>
+                  <span className={styles.achieveIcon} aria-hidden="true">{icon}</span>
                   <div className={styles.achieveBody}>
                     <span className={styles.achieveTitle}>
                       {title}

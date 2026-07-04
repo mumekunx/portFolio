@@ -1,53 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { projects } from '../../data/projects'
 import styles from './Projects.desktop.module.css'
-
-const projects = [
-  {
-    id: 1,
-    tag: 'Hackathon',
-    title: 'Wagamama Gourmet',
-    description: '「今のわがまま」に合わせて飲食店候補がリアルタイムで変わる地図アプリ。スライダーで価格・距離・雰囲気などの優先度を直感操作。2026年2月、チーム4人・1週間で開発。',
-    tech: ['React', 'TypeScript', 'FastAPI', 'Python', 'Supabase', 'MapLibre GL JS'],
-    github: 'https://github.com/kc3hack/2026_team25',
-    demo: 'https://www.youtube.com/watch?v=fbzGp0XJGq8',
-    accent: 'sage',
-    inProgress: false,
-  },
-  {
-    id: 3,
-    tag: 'Desktop App',
-    title: 'フォトブース落書き App',
-    description: '近畿大学・生駒祭の情報学部展示にて実運用。来場者1000人に使ってもらったElectron製デスクトップ描画アプリ。1人で設計・開発・当日運営まで担当。',
-    tech: ['Electron', 'React', 'Vite', 'Tailwind CSS'],
-    github: null,
-    demo: null,
-    accent: 'sage',
-    inProgress: false,
-  },
-  {
-    id: 4,
-    tag: 'iOS App',
-    title: 'BoardGames on iPhone',
-    description: '物理カード不要でボードゲームが遊べる iOSアプリ。第一弾は協力型カードゲーム「Ito」のオンラインリアルタイム対戦。SwiftUI + Firebase Firestore + Cloud Functions で構成。',
-    tech: ['Swift', 'SwiftUI', 'Firebase', 'Cloud Functions', 'TypeScript'],
-    github: 'https://github.com/TamariPlace/boardGamesOnIphone',
-    demo: null,
-    accent: 'sage',
-    inProgress: true,
-  },
-  {
-    id: 2,
-    tag: 'Mobile / NLP',
-    title: 'RealTimeNoting',
-    description: '会話をリアルタイムで文字起こし・要約・固有名詞解決するFlutterアプリ。WebSocketで低遅延ストリーミング、日本語NLPサービスと連携。',
-    tech: ['Flutter', 'Dart', 'TypeScript', 'Python', 'FastAPI', 'WebSocket'],
-    github: 'https://github.com/TamariPlace/RealTimeNoting',
-    demo: null,
-    accent: 'clay',
-    inProgress: true,
-  },
-]
 
 // 3セット並べて中央セットを基準に無限ループを表現する
 const loopedProjects = [...projects, ...projects, ...projects]
@@ -133,10 +87,13 @@ export default function ProjectsDesktop() {
           </button>
 
           <div className={styles.track} ref={trackRef}>
-          {loopedProjects.map((p, i) => (
+          {loopedProjects.map((p, i) => {
+            const isDuplicate = i < projects.length || i >= projects.length * 2
+            return (
             <article
               key={`${p.id}-${i}`}
               className={`${styles.card} ${styles[`card--${p.accent}`]}`}
+              aria-hidden={isDuplicate ? 'true' : undefined}
             >
               <div className={`${styles.thumbnail} ${styles[`thumb--${p.accent}`]}`}>
                 {/* TODO: スクリーンショットや OGP 画像を追加 */}
@@ -164,6 +121,7 @@ export default function ProjectsDesktop() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.linkBtn}
+                      tabIndex={isDuplicate ? -1 : undefined}
                     >
                       GitHub
                     </a>
@@ -174,6 +132,7 @@ export default function ProjectsDesktop() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
+                      tabIndex={isDuplicate ? -1 : undefined}
                     >
                       Live Demo ↗
                     </a>
@@ -181,7 +140,8 @@ export default function ProjectsDesktop() {
                 </div>
               </div>
             </article>
-          ))}
+            )
+          })}
           </div>
 
           <button

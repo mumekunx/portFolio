@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react'
 import styles from './Hero.mobile.module.css'
 
 const navItems = [
@@ -9,27 +8,9 @@ const navItems = [
 ]
 
 export default function HeroMobile() {
-  const shapeRef = useRef(null)
-
-  useEffect(() => {
-    let frame
-    let t = 0
-    const animate = () => {
-      t += 0.003
-      if (shapeRef.current) {
-        const x = 50 + 12 * Math.sin(t)
-        const y = 50 + 12 * Math.cos(t * 0.7)
-        shapeRef.current.style.transform = `translate(${x - 50}px, ${y - 50}px)`
-      }
-      frame = requestAnimationFrame(animate)
-    }
-    frame = requestAnimationFrame(animate)
-    return () => cancelAnimationFrame(frame)
-  }, [])
-
   return (
     <section className={styles.hero} id="hero">
-      <div className={styles.bgShape} ref={shapeRef} />
+      <div className={styles.bgShape} />
       <div className={styles.bgShapeAlt} />
 
       <div className={`container ${styles.content}`}>

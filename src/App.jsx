@@ -7,7 +7,6 @@ import Projects from './components/Projects'
 import Blog from './components/Blog'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
-import MobileRouter from './components/MobileRouter'
 import { useIsMobile } from './hooks/useMediaQuery'
 import { useHashRoute } from './hooks/useHashRoute'
 import './index.css'
@@ -24,25 +23,17 @@ function App() {
     }
   }, [blogSlug])
 
-  if (isMobile) {
-    return (
-      <>
-        <Nav />
-        <main>
-          <MobileRouter />
-        </main>
-        <Footer />
-      </>
-    )
-  }
-
   return (
     <>
       <Nav />
       <main>
         {blogSlug ? (
           <Suspense fallback={null}>
-            <BlogPost slug={blogSlug} variant="desktop" onBack={() => navigate('blog')} />
+            <BlogPost
+              slug={blogSlug}
+              variant={isMobile ? 'mobile' : 'desktop'}
+              onBack={() => navigate('blog')}
+            />
           </Suspense>
         ) : (
           <>

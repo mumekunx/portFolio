@@ -24,7 +24,7 @@ export default function BlogPost({ slug, variant = 'desktop', onBack }) {
       <section className={`section ${styles.notFound}`}>
         <div className="container">
           <p className={styles.notFoundText}>記事が見つかりませんでした。</p>
-          {variant === 'desktop' && (
+          {onBack && (
             <button type="button" className={styles.backBtn} onClick={onBack}>
               ← Blog 一覧へ
             </button>
@@ -37,7 +37,7 @@ export default function BlogPost({ slug, variant = 'desktop', onBack }) {
   return (
     <article className={`section ${styles.article} ${styles[variant]}`}>
       <div className="container">
-        {variant === 'desktop' && (
+        {onBack && (
           <button type="button" className={styles.backBtn} onClick={onBack}>
             ← Blog 一覧へ
           </button>

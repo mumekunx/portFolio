@@ -1,5 +1,22 @@
 # todo.md
 
+## 2026-07-05 スマホ版をPC版と同じ1ページスクロール構成に統一
+- [x] update.md に立案エントリ追記
+- [x] App.jsx の isMobile 分岐を削除、共通で Nav+main(BlogPost or 全セクション)+Footer を描画
+- [x] BlogPost.jsx の戻るボタン表示条件を variant === 'desktop' から onBack の有無に変更
+- [x] MobileRouter ディレクトリ(MobileRouter.jsx/index.jsx/MobileRouter.module.css)を削除、App.jsx の import 削除
+- [x] index.css の body.home-locked 関連ルールを削除
+- [x] useHashRoute.js の reset 関数を削除(他に使用箇所が無いことを確認)
+- [x] Hero.mobile / Nav.mobile の整合確認(メニュー閉じる処理など)
+- [x] モバイル各セクション背景を PC 版のグラデーション進行に統一(About/Skills/Projects/Blog/Contact)
+- [x] Projects/Blog の見出し・本文文字色を深海レイヤー配色に合わせて調整
+- [x] Nav.mobile にスクロール連動背景色同期(Nav.desktop の sectionColors 相当)を移植
+- [x] update.md に完了追記
+- [x] detail.md を更新(MobileRouter 削除・App.jsx/useHashRoute 変更等)
+- [x] npm run lint / npm run build が成功することを確認
+- [x] (実機確認で発見) Footer.mobile の死んだ isHome 分岐が有効化される不具合を修正、Footer.mobile の背景色を #0d1c2e に統一
+- [x] (実機確認で発見) BlogPost.module.css の .article.mobile padding-top 上書きにより戻るボタンが固定Navに隠れる不具合を修正
+
 ## 2026-07-05 セクション間の余白を詰める
 - [x] update.md に立案エントリ追記
 - [x] About.desktop.module.css から min-height: 100svh を削除

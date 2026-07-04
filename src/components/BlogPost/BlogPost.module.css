@@ -2,10 +2,6 @@
   background: var(--white);
 }
 
-.article.mobile {
-  padding-top: 24px;
-}
-
 .backBtn {
   font-family: var(--font-mono);
   font-size: 0.8rem;

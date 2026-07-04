@@ -1,4 +1,32 @@
 # Portfolio プロジェクト概要
+## 2026-07-05 01:46 — スマホ版をPC版と同じ1ページスクロール構成に統一
+**立案:**
+- 依頼内容: スマホ版の表示構成を PC 版と同じ「1ページ縦スクロール」に統一する。現状はスマホのみ `App.jsx` が `MobileRouter` を描画し、Hero をランディング(`body.home-locked` でスクロール固定・Footer 非表示)、`#about` 等のハッシュで各セクションを「別ページ」として表示(戻るボタン付き)する構成になっている。各コンポーネントの mobile バリアント(縦積みレイアウト等)自体は維持し、ルーティング構造だけを PC 同様の1ページスクロールに統一する。
+- 実装方針:
+  1. `src/App.jsx`: `isMobile` による分岐を削除し、PC/スマホ共通で `Nav + main(blogSlug ? BlogPost : Hero〜Contact 全セクション) + Footer` を描画する。`BlogPost` には `variant={isMobile ? 'mobile' : 'desktop'}` と `onBack` を渡す(`useIsMobile` は variant 判定用にのみ残す)。
+  2. `src/components/BlogPost/BlogPost.jsx`: 戻るボタンが `variant === 'desktop'` のときだけ表示される条件を、`onBack` が渡されていれば表示する形に変更(mobile でも表示されるように)。
+  3. `src/components/MobileRouter/` ディレクトリ(`MobileRouter.jsx` / `index.jsx` / `MobileRouter.module.css`)を削除し、`App.jsx` からの import も削除。
+  4. `src/index.css`: `body.home-locked` 関連ルール一式(モバイルのホーム画面固定・Footer 非表示)を削除。
+  5. `src/hooks/useHashRoute.js`: `MobileRouter` の「ホームに戻る」ボタンだけが使っていた `reset` 関数を削除(他に使用箇所がないことを確認済み)。
+  6. Hero.mobile / Nav.mobile を確認し、1ページスクロールの先頭セクション/共通ナビとして自然に振る舞うか調整(Nav.mobile のリンククリック時にメニューを閉じる処理は既存で対応済みを確認)。
+  7. モバイル各セクションの背景色を確認し、PC 版と同じグラデーション進行(`#f7f3ee → #dfe9e6 → #b9d2d3 → #7ba7b5 → #4a7795 → #243f5e → #0d1c2e`)に揃える。従来モバイルは「単独ページ表示」前提で各セクション背景が `var(--white)` / `var(--dark)` 単色だったため、縦に並べると繋がりが不自然になる。Projects/Blog は暗色化するため、見出し(`section-title`/`section-label`)や Blog のリスト文字色も PC の深海レイヤー配色に合わせて明るい色へ変更する。Nav.mobile にスクロール連動の背景色同期(Nav.desktop の `sectionColors` 相当の仕組み)が無ければ、同じロジックをコピーして移植する。
+- 影響範囲: `src/App.jsx`, `src/components/BlogPost/BlogPost.jsx`, `src/components/MobileRouter/`(削除), `src/index.css`, `src/hooks/useHashRoute.js`, `src/components/Nav/Nav.mobile.jsx` / `Nav.mobile.module.css`, `src/components/{About,Skills,Projects,Blog,Contact}/*.mobile.module.css`, `update.md`, `detail.md`, `tasks/todo.md`
+
+**進捗/完了** ✅
+- `src/App.jsx`: `isMobile` 分岐を削除。PC/モバイル共通で `Nav + main(blogSlug ? BlogPost : Hero〜Contact) + Footer` を描画。`BlogPost` に `variant={isMobile ? 'mobile' : 'desktop'}` と `onBack={() => navigate('blog')}` を渡す(`useIsMobile` は variant 判定にのみ残存)。
+- `src/components/BlogPost/BlogPost.jsx`: 戻るボタンの表示条件を `variant === 'desktop'` → `onBack`(truthy かどうか)に変更(記事なし/記事ありの両分岐とも修正)。
+- `src/components/MobileRouter/`(`MobileRouter.jsx` / `index.jsx` / `MobileRouter.module.css`)を削除。`App.jsx` の import も削除。他に参照箇所が無いことを確認済み。
+- `src/index.css`: `@media (max-width: 768px)` 内の `body.home-locked` 関連ルール一式(ホーム画面固定・Footer 非表示)を削除。`grep` で他に `home-locked` 参照が残っていないことを確認。
+- `src/hooks/useHashRoute.js`: `reset()` 関数を削除(`MobileRouter.jsx` 以外に使用箇所が無いことを確認済み)。戻り値は `{ hash, navigate, blogSlug }` に変更。
+- `Hero.mobile.jsx` / `Nav.mobile.jsx` を確認: Hero.mobile のアンカーリンク・Nav.mobile のメニュー閉じる処理(`onClick={() => setOpen(false)}`)はいずれも既存のまま問題なく機能。
+- **背景グラデーションの統一**: About/Skills/Projects/Blog/Contact の `*.mobile.module.css` の背景を、PC 版と同じグラデーション進行(`#f7f3ee → #dfe9e6 → #b9d2d3 → #7ba7b5 → #4a7795 → #243f5e → #0d1c2e`)に統一。従来モバイルは各セクション単独ページ前提で `var(--white)` / `var(--dark)` 単色だった。Projects/Blog は暗色化する範囲のため、PC 版と同じ「深海レイヤー」上書き(`.section-title` / `.section-label` を明色に、Blog の記事一覧文字色・区切り線も明色に)を追加。Hero.mobile にも desktop と同じ起点グラデ(`#f7f3ee → #dfe9e6`)を追加(元は背景指定なし)。
+- **Nav.mobile の背景色同期を移植**: `Nav.desktop.jsx` の `sectionColors` / `computeColor`(スクロール位置から現在セクションの背景色を補間し `--nav-bg` に反映、暗い背景では `dark` クラスで文字色反転)をそのまま `Nav.mobile.jsx` にコピーして移植。`Nav.mobile.module.css` に `.dark.scrolled` / `.dark .logo` / `.dark .burger span` / `.dark .langBtn` を追加。
+- **実機確認で見つけた副次的な不具合を修正**:
+  - `Footer.mobile.jsx` に、旧 `home-locked` 構成下では `body.home-locked` により footer 自体が `display:none` になるため実質一度も描画されなかった「isHome 時にメール+SNS を複製表示する」死んだコードが存在。footer が常時表示になったことでこの分岐が有効化され、hash が空のとき Contact と内容が重複表示される不具合になるため、`Footer.desktop.jsx` と同じシンプルな著作権表記のみに変更し、`useHashRoute` 依存・未使用の `socials` 定数・関連 CSS クラス(`.contact`/`.contactLabel`/`.mail`/`.socials`/`.social`)を削除。
+  - `Footer.mobile.module.css` の背景が `var(--dark)`(#2a2a2a、グレー寄り)で、Contact の終端色 `#0d1c2e`(紺)と食い違い継ぎ目が生じていたため `#0d1c2e` に統一(`Footer.desktop.module.css` は元から `#0d1c2e`)。
+  - `BlogPost.module.css` の `.article.mobile { padding-top: 24px; }`(旧 `MobileRouter` の `.page` ラッパーが確保していた Nav ぶんの余白を前提にした上書き)を削除し忘れていたため、記事詳細ページの戻るボタン・ヘッダが固定 Nav の下に隠れる不具合があった → ルールごと削除して修正。
+- **検証**: `npm run lint` / `npm run build` いずれも成功。加えて `npx playwright screenshot` で 390×844 のモバイルビューポートを headless Chromium で実機的に確認(Hero→About→Skills→Projects→Blog→Contact→Footer の背景グラデ連続性、Nav の色同期、ハンバーガーメニューの開閉とリンク遷移、BlogPost mobile の戻るボタン表示)。上記2件の不具合はこの確認で発見・修正した。
+
 ## 2026-07-05 01:26 — セクション間の余白を詰める
 **立案:**
 - 依頼内容: セクションの合間の余白が大きすぎるので詰めてほしい(Skills と Projects の間に画面の半分以上の空白がある、とのスクリーンショット付き報告)。

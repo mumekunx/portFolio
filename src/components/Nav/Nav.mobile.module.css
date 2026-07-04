@@ -9,9 +9,16 @@
 }
 
 .scrolled {
-  background: var(--sand);
+  background: var(--nav-bg, rgba(247, 243, 238, 0.92));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
   padding: 12px 0;
+}
+
+/* 暗い背景時はシャドウを白系に変えて境目を抑える */
+.dark.scrolled {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .inner {
@@ -25,6 +32,11 @@
   font-size: 1.5rem;
   color: var(--dark);
   letter-spacing: -0.02em;
+  transition: color var(--transition);
+}
+
+.dark .logo {
+  color: #eaf1f4;
 }
 
 .menuOverlay {
@@ -131,6 +143,15 @@
   color: var(--dark);
 }
 
+.dark .langBtn {
+  color: rgba(234, 241, 244, 0.85);
+}
+
+.dark .langBtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
 .caret {
   font-size: 0.7rem;
   transition: transform var(--transition);
@@ -201,7 +222,11 @@
   height: 2px;
   background: var(--dark);
   border-radius: 2px;
-  transition: transform var(--transition), opacity var(--transition);
+  transition: background var(--transition), transform var(--transition), opacity var(--transition);
+}
+
+.dark .burger span {
+  background: #eaf1f4;
 }
 
 .burgerLineTop {

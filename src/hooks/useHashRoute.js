@@ -15,13 +15,8 @@ export function useHashRoute() {
     window.location.hash = h
   }
 
-  const reset = () => {
-    history.pushState('', document.title, window.location.pathname + window.location.search)
-    setHash('')
-  }
-
   // #blog/<slug> なら記事詳細
   const blogSlug = hash.startsWith('blog/') ? hash.slice('blog/'.length) : null
 
-  return { hash, navigate, reset, blogSlug }
+  return { hash, navigate, blogSlug }
 }

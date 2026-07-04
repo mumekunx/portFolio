@@ -1,5 +1,5 @@
 .about {
-  background: var(--white);
+  background: linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%);
 }
 
 .grid {

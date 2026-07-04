@@ -27,16 +27,16 @@
 - **参照元**: `index.html`
 
 ### `src/App.jsx`
-- **役割**: ルートコンポーネント。`useIsMobile()` で表示を出し分け。
-  - モバイル → `<Nav>` + `<MobileRouter>` + `<Footer>`
-  - PC → `<Nav>` + 全セクション縦並び + `<Footer>`、`#blog/<slug>` のときだけ `<BlogPost>` を表示
+- **役割**: ルートコンポーネント。PC/モバイル共通で `<Nav>` + `<main>` + `<Footer>` を描画する 1 ページ縦スクロール構成（以前はモバイルのみ `MobileRouter` による別ページ遷移だったが、PC と同じ構成に統一した）。
+  - `<main>` の中身: `blogSlug` があれば `<BlogPost>`（`variant={isMobile ? 'mobile' : 'desktop'}`、`onBack` で一覧へ戻す）、無ければ `Hero〜Contact` 全セクションを縦に並べる
+  - 各セクションコンポーネント自身が内部で `useIsMobile()` によって desktop/mobile バリアントを出し分けるため、`App.jsx` 側は分岐不要
   - `BlogPost` は `lazy(() => import('./components/BlogPost'))` で遅延ロードし、`<Suspense fallback={null}>` でラップ（記事詳細を開いたときだけ該当チャンクを取得。初期バンドル削減のため）
 - **主要**: `App()`（default export）
-- **依存**: 全セクションコンポーネント, `MobileRouter`, `BlogPost`(lazy), `useMediaQuery` (`useIsMobile`), `useHashRoute`（`blogSlug` / `navigate` を取得）, `./index.css`
+- **依存**: 全セクションコンポーネント, `BlogPost`(lazy), `useMediaQuery` (`useIsMobile`、`BlogPost` の `variant` 判定用), `useHashRoute`（`blogSlug` / `navigate` を取得）, `./index.css`
 - **参照元**: `main.jsx`
 
 ### `src/index.css`
-- **役割**: グローバル CSS。カラー変数（`--sage` 緑 / `--clay` テラコッタ / `--sand` ベージュ背景）、アニメーション（`morph` / `float` / `fadeSlideUp`）、`.fade-in` / `.visible` / `.container` ユーティリティ、フォント設定。モバイル時の `body.home-locked`（ホームを `100svh` ぴったりに固定しスクロール無効化）も定義。`@media (prefers-reduced-motion: reduce)` ブロックで、OS 側の設定に応じて全アニメーション/トランジションを実質無効化（`animation-duration`/`transition-duration` を `0.01ms` に、`.fade-in` は即表示）。
+- **役割**: グローバル CSS。カラー変数（`--sage` 緑 / `--clay` テラコッタ / `--sand` ベージュ背景）、アニメーション（`morph` / `float` / `fadeSlideUp`）、`.fade-in` / `.visible` / `.container` ユーティリティ、フォント設定。`@media (max-width: 768px)` で `.section` の上下パディングを詰める（旧・モバイル用の `body.home-locked`（ホームを `100svh` に固定しスクロール無効化）ルールは、モバイルを PC と同じ 1 ページスクロール構成に統一したのに伴い削除済み）。`@media (prefers-reduced-motion: reduce)` ブロックで、OS 側の設定に応じて全アニメーション/トランジションを実質無効化（`animation-duration`/`transition-duration` を `0.01ms` に、`.fade-in` は即表示）。
 - **依存**: Google Fonts (DM Serif Display / DM Sans / Space Mono)
 - **参照元**: `main.jsx`, `App.jsx`
 
@@ -55,36 +55,17 @@
 - **参照元**: `App.jsx`, 全 `index.jsx`（PC/モバイル振り分け）
 
 ### `useHashRoute.js`
-- **役割**: `window.location.hash` をルートとして購読・操作するフック（モバイルのページ切替、および `#blog/<slug>` 記事詳細ルーティングに使用）。`blogSlug` の解析をここに一元化（以前は各コンポーネント側に散在）。
-- **主要**: `useHashRoute()` → `{ hash, navigate(h), reset(), blogSlug }`
-  - `hashchange` を購読、`reset()` は履歴を消してホームへ戻す
+- **役割**: `window.location.hash` をルートとして購読・操作するフック（`#blog/<slug>` 記事詳細ルーティング、および Nav 等のアンカーリンク遷移に使用）。`blogSlug` の解析をここに一元化。
+- **主要**: `useHashRoute()` → `{ hash, navigate(h), blogSlug }`
+  - `hashchange` を購読
   - `blogSlug`: `hash` が `blog/` で始まる場合はその後続文字列、それ以外は `null`
-- **参照元**: `MobileRouter.jsx`, `App.jsx`
+  - `reset()` は旧 `MobileRouter` の「ホームに戻る」ボタンのみが使っていた関数で、モバイルを 1 ページスクロール構成に統一し `MobileRouter` を削除したのに伴い削除済み（他に使用箇所なし）
+- **参照元**: `App.jsx`
 
 ### `useScrollReveal.js`
 - **役割**: `.fade-in` 要素を `IntersectionObserver` で監視し、可視になったら `.visible` を付与（スクロール連動フェードイン）。
 - **主要**: `useScrollReveal(selector = '.fade-in')`
 - **参照元**: 各セクションコンポーネント（フェードイン演出を使うもの）
-
----
-
-## モバイルルーター (`src/components/MobileRouter/`)
-
-### `MobileRouter.jsx`
-- **役割**: モバイル時のページ切替の中核。hash に応じてセクションを 1 ページ表示。
-  - 空 / `hero` / 未知の hash → `<Hero>`（ランディング）
-  - `about|skills|projects|blog|contact` → 該当セクション + 上部「← Back」ボタン
-  - `blogSlug` があるとき → `<BlogPost variant="mobile">` を `<Suspense fallback={null}>` でラップして表示（記事一覧へ戻る「← Blog」バー付き）
-  - hash 変更時に scroll-to-top
-  - ホーム表示中は `document.body` に `home-locked` クラスを付与（画面ぴったり固定用、index.css 側で制御）
-- **主要**: `MobileRouter()`、内部定数 `routes`、`isHome` 判定、`BlogPost = lazy(() => import('../BlogPost'))`
-- **依存**: `useHashRoute`（`hash` / `reset` / `navigate` / `blogSlug`）, 各セクション, `BlogPost`(lazy), `MobileRouter.module.css`
-- **参照元**: `App.jsx`（モバイル時のみ）
-
-### `index.jsx`
-- **役割**: `MobileRouter` の re-export。
-### `MobileRouter.module.css`
-- **役割**: ページコンテナ・Back バーのスタイル。
 
 ---
 
@@ -94,16 +75,16 @@
 - **役割**: `useIsMobile()` で `NavDesktop` / `NavMobile` を振り分け。
 
 ### `Nav.mobile.jsx`
-- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ "About me"。
-- **主要 state**: `scrolled` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages`
-- **a11y**: バーガーボタン・言語ドロップダウントリガーに `aria-expanded={open}` / `aria-expanded={langOpen}`。言語ドロップダウンは `Escape` キー押下で `setLangOpen(false)`。
+- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ "About me"。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。
+- **主要 state**: `scrolled` / `navColor` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値）/ `sectionOrder`、関数 `lerp` / `lerpColor` / `isDarkColor`
+- **a11y**: バーガーボタン・言語ドロップダウントリガーに `aria-expanded={open}` / `aria-expanded={langOpen}`。言語ドロップダウンは `Escape` キー押下で `setLangOpen(false)`。メニューリンクはクリックで `setOpen(false)`（メニューを閉じてから遷移）。
 - **依存**: `Nav.mobile.module.css`
 
 ### `Nav.desktop.jsx`
-- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。
+- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。
 - **a11y**: `Nav.mobile.jsx` と同様に `aria-expanded`（バーガー/言語トリガー）と `Escape` での言語ドロップダウン閉じ処理あり。`isDarkColor` 判定のコメント誤りを修正済み。
 ### `Nav.{mobile,desktop}.module.css`
-- **役割**: 各バージョンのスタイル。
+- **役割**: 各バージョンのスタイル。`.scrolled` は `var(--nav-bg)`（JS から設定）を背景に使用し、`.dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るい色に切り替える（両バージョン共通の仕組み）。
 
 ---
 
@@ -113,14 +94,14 @@
 - **役割**: `useIsMobile()` で `HeroDesktop` / `HeroMobile` を振り分け。
 
 ### `Hero.mobile.jsx`
-- **役割**: モバイルのランディング。名前 "Iwai Shuto"・キャッチコピー、背景シェイプ2枚（CSS アニメーションのみ、JS 側の駆動なし）、About/Skills/Projects/Blog への `#hash` リンク。
+- **役割**: 1 ページスクロールの先頭セクション。名前 "Iwai Shuto"・キャッチコピー、背景シェイプ2枚（CSS アニメーションのみ、JS 側の駆動なし）、About/Skills/Projects/Blog への `#hash` リンク（アンカースクロールで該当セクションへ遷移）。
 - **主要**: `HeroMobile()`、内部定数 `navItems`
 - **依存**: `Hero.mobile.module.css`
 
 ### `Hero.desktop.jsx`
 - **役割**: PC のファーストビュー（背景シェイプ2枚、CSS アニメーションのみ）。
 ### `Hero.{mobile,desktop}.module.css`
-- **役割**: 各バージョンのスタイル。背景シェイプに `morph`（形状変化）と `drift`（±15px/±12px・20秒ループの浮遊移動）を併用。以前は `requestAnimationFrame` で JS 側から動かしていたが、CSS `@keyframes drift` に置き換えて JS 常時実行をなくした（`prefers-reduced-motion` にも自動追従）。
+- **役割**: 各バージョンのスタイル。背景シェイプに `morph`（形状変化）と `drift`（±15px/±12px・20秒ループの浮遊移動）を併用。以前は `requestAnimationFrame` で JS 側から動かしていたが、CSS `@keyframes drift` に置き換えて JS 常時実行をなくした（`prefers-reduced-motion` にも自動追従）。`.hero` の背景は両バージョンとも `linear-gradient(to bottom, #f7f3ee 0%, #dfe9e6 100%)`（以降 About〜Contact へと続くグラデ進行の起点。`Hero.mobile` は元々背景指定なしだったが、1 ページスクロール化に伴い desktop と同じグラデを追加）。
 
 ---
 
@@ -133,14 +114,17 @@
 - **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、本人写真）。表示データは `src/data/about.js` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
 - **写真**: `About.desktop.jsx` / `About.mobile.jsx` で `src/assets/about-photo.jpg` を `import aboutPhoto from '../../assets/about-photo.jpg'` として読み込み、`.photoInner` 内に `<img src={aboutPhoto} className={styles.photo} loading="lazy" />` で表示（NVIDIA GTC 会場前で撮影）。`.photo` は `width/height: 100%; object-fit: cover;` で `.photoInner`（aspect-ratio 4/3）にフィットさせる。旧プレースホルダーの `.photoText` スタイルは削除済み。
 - **a11y**: 実績アイコン（`achieveIcon` の絵文字）に `aria-hidden="true"`。
+- **背景**: `.about` は desktop/mobile 共通で `linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%)`（Hero の終端色から連続。mobile は元々単色 `var(--white)` だったが 1 ページスクロール化に伴い desktop と揃えた）。
 
 ### `src/components/Skills/`
 - **役割**: スキルカード（Frontend / Mobile / Language / Tools）。表示データは `src/data/skills.js` の `categories` を desktop/mobile 両方から import。
 - **a11y**: カテゴリアイコン（絵文字）に `aria-hidden="true"`。
+- **背景**: `.skills` は desktop/mobile 共通で `linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%)`（About の終端色から連続。文字はこの範囲ではまだ十分明るいため色変更なし）。
 
 ### `src/components/Projects/`
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。表示データは `src/data/projects.js` の `projects` を desktop/mobile 両方から import。
 - **主要（`Projects.desktop.jsx`）**: 3セット（`[...projects, ...projects, ...projects]` = `loopedProjects`）を並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル。前後の複製セット（`isDuplicate = i < projects.length || i >= projects.length * 2`）のカードには `aria-hidden="true"`、内部リンクには `tabIndex={-1}` を付与し、スクリーンリーダー/キーボード操作が複製カードに触れないようにしている。
+- **背景**: `.projects` は desktop/mobile 共通で `linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%)`（暗色化していくため「深海レイヤー」として `.projects :global(.section-title)` / `.projects :global(.section-label)` を明るい色に上書き。カード本体は `.body` が不透明な白背景のため影響なし）。
 
 ### `src/components/Blog/`
 - **役割**: ブログ記事一覧セクション。`src/lib/posts.js` から取得した記事メタデータをカード表示。記事が0件のときは `Coming soon...` を表示。記事カードのリンクは `#blog/<slug>` で詳細ページへ遷移。
@@ -148,21 +132,25 @@
   - `Blog.desktop.jsx` / `Blog.mobile.jsx`: posts 配列を map してカード描画。0件時は `.comingSoon` 表示
   - `Blog.desktop.module.css` / `Blog.mobile.module.css`: `.blog` / `.header` / `.list` / `.postLink` / `.postMeta` / `.date` / `.postTag` / `.postTitle` / `.postExcerpt` / `.readMore` / `.comingSoon`
 - **依存**: `lib/posts.js`, `hooks/useScrollReveal`
+- **背景**: `.blog` は desktop/mobile 共通で `linear-gradient(to bottom, #4a7795 0%, #243f5e 100%)`（暗色寄りのため「深海レイヤー」として見出しと記事一覧の文字色（`.postTitle` / `.postExcerpt` / `.date` / `.comingSoonText`、`.postLink` / `.comingSoon` の境界線）を明るい色に上書き。`.postTag` は不透明な白ピルのため対象外）。
 
 ### `src/components/BlogPost/`
 - **役割**: ブログ記事の詳細ページ。`#blog/<slug>` で表示される。`react-markdown` で本文をHTMLレンダリング、コードブロックは `rehype-highlight`（github-dark テーマ）でハイライト。
 - **主要ファイル**:
-  - `BlogPost.jsx`: `getPost(slug)` で記事取得、`<ReactMarkdown>` で本文描画。`variant="desktop"|"mobile"` で見た目調整、`onBack` で一覧に戻る。マウント中は `document.title` を記事タイトルに書き換え、アンマウント時（`useEffect` のクリーンアップ）に元のタイトルへ復元
-  - `BlogPost.module.css`: 記事ヘッダ、本文（h1-h4, p, ul/ol, code, pre, blockquote, table, img）の全タイポグラフィ
+  - `BlogPost.jsx`: `getPost(slug)` で記事取得、`<ReactMarkdown>` で本文描画。`variant="desktop"|"mobile"` で見た目調整、戻るボタン「← Blog 一覧へ」は `onBack` が渡されていれば表示（以前は `variant === 'desktop'` のときだけ表示していたが、mobile も 1 ページスクロール構成の `App.jsx` から `onBack` を受け取るようになったため条件を変更）。マウント中は `document.title` を記事タイトルに書き換え、アンマウント時（`useEffect` のクリーンアップ）に元のタイトルへ復元
+  - `BlogPost.module.css`: 記事ヘッダ、本文（h1-h4, p, ul/ol, code, pre, blockquote, table, img）の全タイポグラフィ。`.article.mobile { padding-top: 24px; }`（旧 `MobileRouter` の `.page` ラッパーが確保していた Nav ぶんの余白を前提にした上書き）は、`MobileRouter` 削除に伴い削除済み — 削除しないと固定 Nav の下に戻るボタンが隠れてしまうため
   - `index.js`: default export 再エクスポート
 - **依存**: `react-markdown`, `remark-gfm`, `rehype-highlight`, `highlight.js/styles/github-dark.css`, `lib/posts.js`
-- **参照元**: `App.jsx`（PC、`React.lazy` で遅延ロード）, `MobileRouter.jsx`（モバイル、同じく `React.lazy` で遅延ロード）
+- **参照元**: `App.jsx`（PC/モバイル共通、`React.lazy` で遅延ロード）
 
 ### `src/components/Contact/`
-- **役割**: 連絡先（メール + SNS）。モバイルでは Hero フッター側にのみ表示する運用。SNS リンク・アイコンは `src/data/socials.jsx` の `socials` を desktop/mobile 両方から import。
+- **役割**: 連絡先（メール + SNS）。1 ページスクロールの最終セクションとして常に表示（以前はモバイルのみ Hero フッター側にも同内容が重複表示される想定のコードがあったが、実際には旧 `body.home-locked` によりフッター自体が非表示になっていたため到達しない死んだ分岐だった。後述の `Footer.mobile.jsx` 参照）。SNS リンク・アイコンは `src/data/socials.jsx` の `socials` を desktop/mobile 両方から import。
+- **背景**: `.contact` は desktop/mobile 共通で `linear-gradient(to bottom, #243f5e 0%, #0d1c2e 100%)`（Blog の終端色から連続。mobile は元々 `var(--dark)`（#2a2a2a、グレー寄り）だったため desktop の紺色グラデに揃えた）。
 
 ### `src/components/Footer/`
 - **役割**: フッター。`App.jsx` で常時表示（PC/モバイル共通配置）。
+- **`Footer.mobile.jsx` の修正**: 旧実装は `useHashRoute` の `hash` を見て `isHome`（hash が空 or `hero`）のときだけ、メール + SNS リンクの複製ブロックを表示する分岐を持っていた。しかし旧 `MobileRouter` 構成では `isHome` の間 `body.home-locked` により `footer` 自体が `display: none` になっていたため、この分岐は実質一度も描画されない死んだコードだった。`MobileRouter`/`home-locked` を削除して常時表示のフッターに統一したことでこの分岐が実際に有効化されてしまい、初回ロード時など hash が空のときに Contact セクションと内容が重複表示される不具合になり得たため、`Footer.desktop.jsx` と同様のシンプルな著作権表記のみに変更（`isHome` 分岐・`useHashRoute` 依存・未使用になった `socials` 定数と関連 CSS クラスを削除）。
+- **背景**: `.footer` は desktop/mobile 共通で `#0d1c2e`（Contact の終端色と一致。mobile は元々 `var(--dark)`（#2a2a2a）で desktop と色味が違い継ぎ目が生じていたため揃えた）。
 
 ---
 

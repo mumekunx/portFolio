@@ -1,5 +1,14 @@
 .projects {
-  background: var(--white);
+  background: linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%);
+}
+
+/* 深海レイヤー: 背景が暗いので見出しを明るく */
+.projects :global(.section-title) {
+  color: #eaf1f4;
+}
+
+.projects :global(.section-label) {
+  color: #cfe0e6;
 }
 
 .grid {

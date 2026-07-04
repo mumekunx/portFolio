@@ -138,31 +138,6 @@ ul {
 @media (max-width: 768px) {
   .section { padding: 72px 0; }
   .section-title { margin-bottom: 32px; }
-
-  /* ホーム（ランディング）は画面ぴったりに収めてスクロールを無効化 */
-  body.home-locked,
-  body.home-locked #root {
-    height: 100svh;
-    overflow: hidden;
-  }
-  body.home-locked #root {
-    display: flex;
-    flex-direction: column;
-  }
-  body.home-locked main {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-  body.home-locked #hero {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-  /* ホームではフッターを非表示（試験的） */
-  body.home-locked footer {
-    display: none;
-  }
 }
 
 /* ===== Reduced Motion ===== */

@@ -15,7 +15,7 @@
 
 .copy {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.04em;
   margin-top: 4px;

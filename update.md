@@ -1,4 +1,30 @@
 # Portfolio プロジェクト概要
+## 2026-07-05 03:11 — UI/UXレビュー指摘の一括修正
+**立案:**
+- 依頼: ui-ux-pro-max スキルによるサイト全体レビューで判明した問題の修正(ユーザー承認済み)
+- 主な指摘:
+  1. 色コントラスト不足(セクションラベルのクレイ色 1.93、Projects見出し 2.29、Blog本文 2.83 など WCAG AA 未達多数)
+  2. Suspense fallback が null で記事ロード中無反応
+  3. 12px未満の極小フォント
+  4. 絵文字アイコン
+  5. touch-action未設定
+  6. App.css が未importの死にファイル
+  7. カルーセルに位置インジケータなし
+  8. スキップリンクなし
+  9. Navスクロールハンドラ未スロットル
+- 計画: 4エージェント並列(A: グローバルCSS/App シェル、B: Projects カルーセル、C: Blog/Contact/About/Skills のコントラストと SVG アイコン化、D: Nav スロットルと画像最適化)
+- ブランチ: feature/20260705-0311-uiux-review-fixes
+
+**進捗/完了** ✅
+- **コントラスト修正(WCAG AA 達成)**: `--clay-dark`(#7a4327)を新設し `.section-label` に適用(skills 背景 #b9d2d3 上で比 4.97)。`--text-light` を #6b6b6b に変更(比 4.82)。Projects の見出し・ラベル・タグ・バッジ・サムネラベル・ナビ矢印は、背景 #7ba7b5 上で白系では物理的に 4.5 を満たせないため濃色系に変更。Blog の日付/抜粋は白 95%(比 4.52)、`.postTitle` は #f6f9fb、`.readMore`/hover は #fffae1(比 4.59)。Contact のサブ文は白 70%(比 6.19)。
+- `src/App.css`(未 import の死にファイル)を削除。`src/index.css` に `:focus-visible` スタイル、`touch-action: manipulation`、スキップリンク(`.skip-link`)、ルートローディング(`.routeLoading`)を追加。`App.jsx` に本文へのスキップリンクと `Suspense` フォールバック(`<div className="routeLoading">Loading…</div>`)、`<main>` に `id="main"` を付与。
+- 極小フォント引き上げ: Footer 0.7/0.72rem → 0.75rem、Projects の tag/badge/techBadge/thumbLabel → 0.75rem、Nav の `.caret` → 0.75rem。
+- 絵文字→SVGアイコン: `src/data/skills.js` → `skills.jsx`、`about.js` → `about.jsx` にリネームし、Lucide 由来のインライン SVG(monitor/smartphone/code/wrench、landmark/rocket/party-popper 相当)に置換。Skills/About 側は `<span aria-hidden="true">{icon}</span>` でラップし、CSS 側でアイコンサイズ・色を調整。
+- カルーセルのドットインジケータ: `useInfiniteCarousel` が `activeIndex`(現在中央の論理インデックス)も返すよう拡張。Projects desktop/mobile に `aria-hidden` なドット表示(サイズ+色でアクティブ区別)+ `sr-only` の `aria-live="polite"`「プロジェクト n / 4」を追加。
+- Nav の `computeColor` を `requestAnimationFrame` でスロットル化(desktop/mobile 両方)。
+- `about-photo.jpg` を品質50で再圧縮(448KB → 235KB、解像度は 1600×1200 のまま不変)。
+- 検証: `npm run lint` / `npm run build` 成功。
+
 ## 2026-07-05 02:50 — スマホ版 Projects を PC と同じカルーセルに変更
 **立案:**
 - 依頼内容: スマホ版 Projects セクション(現状はただの縦積みグリッド)を、PC 版(`Projects.desktop.jsx`)と同じ「3セット複製の無限ループカルーセル・中央1枚が主役+左右チラ見え・← →ボタンで送る」表示に変更する。ただし操作は**ボタンのみ**にし、横スワイプでは動かないようにする(iOS Safari の端スワイプ「戻る」ジェスチャーと衝突し誤操作になるため)。

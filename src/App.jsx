@@ -25,10 +25,11 @@ function App() {
 
   return (
     <>
+      <a href="#main" className="skip-link">本文へスキップ</a>
       <Nav />
-      <main>
+      <main id="main">
         {blogSlug ? (
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="routeLoading">Loading…</div>}>
             <BlogPost
               slug={blogSlug}
               variant={isMobile ? 'mobile' : 'desktop'}

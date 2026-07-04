@@ -2,13 +2,14 @@
   background: linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%);
 }
 
-/* 深海レイヤー: 背景が暗いので見出しを明るく */
+/* 深海レイヤー: 背景が最も明るい上端(#7ba7b5)に見出しが乗るため濃色に切り替え
+   (白系は純白でも #7ba7b5 上で最大2.61までしか出ず 4.5/3.0 を満たせない) */
 .projects :global(.section-title) {
-  color: #eaf1f4;
+  color: var(--dark); /* #2a2a2a on #7ba7b5 = 5.49 (大文字基準3.0以上) */
 }
 
 .projects :global(.section-label) {
-  color: #cfe0e6;
+  color: var(--dark); /* #2a2a2a on #7ba7b5 = 5.49 (小文字基準4.5以上) */
 }
 
 .carousel {
@@ -48,11 +49,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
+  /* 淡色アイコンだと背景が最も明るい上端付近で 2:1 前後まで落ちるため、
+     不透明度を上げて濃色アイコンにし、どの位置でも安定して読める組み合わせに変更 */
+  background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #eef4f6;
+  color: var(--dark);
   font-size: 1.25rem;
   cursor: pointer;
   transition: background var(--transition), transform var(--transition);
@@ -60,7 +63,7 @@
 
 .navBtn:hover,
 .navBtn:active {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 .card {
@@ -102,10 +105,12 @@
 
 .thumbLabel {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.8);
+  /* 半透明白は背景の sage/clay パステルグラデーション上で 1.4〜1.9 しか出ないため濃色に変更
+     (var(--dark) は各グラデーション端で 6.7〜9.4) */
+  color: var(--dark);
 }
 
 .body {
@@ -122,18 +127,20 @@
 
 .tag {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--clay);
+  /* var(--clay) on white body bg = 2.13 で未達。var(--dark) に変更(白背景上で高コントラスト) */
+  color: var(--dark);
 }
 
 .badge {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--white);
+  /* var(--white) on var(--clay) = 2.13 で未達。文字色を濃色に変更(var(--dark) on var(--clay) = 6.73) */
+  color: var(--dark);
   background: var(--clay);
   padding: 2px 8px;
   border-radius: 99px;
@@ -162,7 +169,7 @@
 
 .techBadge {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   padding: 4px 10px;
   border-radius: 20px;
   background: var(--sand);
@@ -202,4 +209,40 @@
   background: var(--dark-mid);
   border-color: var(--dark-mid);
   color: var(--sand);
+}
+
+/* 現在位置ドットインジケータ(装飾専用、クリック不可) */
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  transition: background var(--transition), width var(--transition), height var(--transition);
+}
+
+.dotActive {
+  width: 11px;
+  height: 11px;
+  background: var(--dark);
+}
+
+/* 視覚的には隠すがスクリーンリーダーには読ませる(sr-only) */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

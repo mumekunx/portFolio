@@ -50,7 +50,10 @@ export default function NavMobile() {
   const langRef = useRef(null)
 
   useEffect(() => {
+    let rafId = null
+
     const computeColor = () => {
+      rafId = null
       const navHeight = 60 // Nav の概ねの高さ
       const probeY = navHeight + 1 // Nav 直下のピクセル位置を判定基準にする
       const y = window.scrollY
@@ -76,12 +79,19 @@ export default function NavMobile() {
       setNavColor(lerpColor(colors[0], colors[1], progress))
     }
 
+    // スクロール/リサイズ発火をフレームごとに1回へまとめる
+    const scheduleComputeColor = () => {
+      if (rafId !== null) return
+      rafId = requestAnimationFrame(computeColor)
+    }
+
     computeColor()
-    window.addEventListener('scroll', computeColor, { passive: true })
-    window.addEventListener('resize', computeColor)
+    window.addEventListener('scroll', scheduleComputeColor, { passive: true })
+    window.addEventListener('resize', scheduleComputeColor)
     return () => {
-      window.removeEventListener('scroll', computeColor)
-      window.removeEventListener('resize', computeColor)
+      window.removeEventListener('scroll', scheduleComputeColor)
+      window.removeEventListener('resize', scheduleComputeColor)
+      if (rafId !== null) cancelAnimationFrame(rafId)
     }
   }, [])
 

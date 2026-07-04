@@ -41,8 +41,20 @@
 
 .icon {
   display: block;
-  font-size: 2rem;
   margin-bottom: 16px;
+}
+
+.icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.card--sage .icon {
+  color: var(--sage-dark);
+}
+
+.card--clay .icon {
+  color: var(--clay-dark);
 }
 
 .cardTitle {

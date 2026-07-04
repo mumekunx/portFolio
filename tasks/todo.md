@@ -1,5 +1,19 @@
 # todo.md
 
+## 2026-07-05 UI/UXレビュー指摘の一括修正
+
+作業ブランチ: `feature/20260705-0311-uiux-review-fixes`
+
+- [x] update.md に立案エントリ追記
+- [x] エージェントA: グローバルCSS/App シェル(App.css 未import死にファイル対応、スキップリンク追加、Suspense fallback 修正)
+- [x] エージェントB: Projects カルーセルに位置インジケータ追加
+- [x] エージェントC: Blog/Contact/About/Skills のコントラスト修正(セクションラベル・見出し・本文)、絵文字アイコンを SVG 化
+- [x] エージェントD: Nav スクロールハンドラのスロットル化、touch-action 設定、画像最適化
+- [x] 12px未満の極小フォント修正
+- [x] npm run lint / npm run build 成功確認
+- [x] update.md に完了追記
+- [x] detail.md を更新
+
 ## 2026-07-05 スマホ版 Projects を PC と同じカルーセルに変更
 - [x] update.md に立案エントリ追記
 - [x] Projects.desktop.jsx / .module.css のカルーセル実装を確認

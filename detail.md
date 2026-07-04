@@ -30,18 +30,16 @@
 - **役割**: ルートコンポーネント。PC/モバイル共通で `<Nav>` + `<main>` + `<Footer>` を描画する 1 ページ縦スクロール構成（以前はモバイルのみ `MobileRouter` による別ページ遷移だったが、PC と同じ構成に統一した）。
   - `<main>` の中身: `blogSlug` があれば `<BlogPost>`（`variant={isMobile ? 'mobile' : 'desktop'}`、`onBack` で一覧へ戻す）、無ければ `Hero〜Contact` 全セクションを縦に並べる
   - 各セクションコンポーネント自身が内部で `useIsMobile()` によって desktop/mobile バリアントを出し分けるため、`App.jsx` 側は分岐不要
-  - `BlogPost` は `lazy(() => import('./components/BlogPost'))` で遅延ロードし、`<Suspense fallback={null}>` でラップ（記事詳細を開いたときだけ該当チャンクを取得。初期バンドル削減のため）
+  - `BlogPost` は `lazy(() => import('./components/BlogPost'))` で遅延ロードし、`<Suspense fallback={<div className="routeLoading">Loading…</div>}>` でラップ（記事詳細を開いたときだけ該当チャンクを取得。初期バンドル削減のため。以前は `fallback={null}` で無反応だったが、UI/UX レビューでロード中の無反応が指摘され修正）
+  - `<a href="#main" className="skip-link">本文へスキップ</a>` を `<Nav>` の直前に配置し、`<main>` に `id="main"` を付与（キーボード/スクリーンリーダー利用者向けのスキップリンク）
 - **主要**: `App()`（default export）
 - **依存**: 全セクションコンポーネント, `BlogPost`(lazy), `useMediaQuery` (`useIsMobile`、`BlogPost` の `variant` 判定用), `useHashRoute`（`blogSlug` / `navigate` を取得）, `./index.css`
 - **参照元**: `main.jsx`
 
 ### `src/index.css`
-- **役割**: グローバル CSS。カラー変数（`--sage` 緑 / `--clay` テラコッタ / `--sand` ベージュ背景）、アニメーション（`morph` / `float` / `fadeSlideUp`）、`.fade-in` / `.visible` / `.container` ユーティリティ、フォント設定。`@media (max-width: 768px)` で `.section` の上下パディングを詰める（旧・モバイル用の `body.home-locked`（ホームを `100svh` に固定しスクロール無効化）ルールは、モバイルを PC と同じ 1 ページスクロール構成に統一したのに伴い削除済み）。`@media (prefers-reduced-motion: reduce)` ブロックで、OS 側の設定に応じて全アニメーション/トランジションを実質無効化（`animation-duration`/`transition-duration` を `0.01ms` に、`.fade-in` は即表示）。
+- **役割**: グローバル CSS。カラー変数（`--sage` 緑 / `--clay` テラコッタ / `--sand` ベージュ背景 / `--clay-dark`(#7a4327、コントラスト用の濃色クレイ) / `--text-light`(#6b6b6b、コントラスト用に調整)）、アニメーション（`morph` / `float` / `fadeSlideUp`）、`.fade-in` / `.visible` / `.container` ユーティリティ、フォント設定。`@media (max-width: 768px)` で `.section` の上下パディングを詰める（旧・モバイル用の `body.home-locked`（ホームを `100svh` に固定しスクロール無効化）ルールは、モバイルを PC と同じ 1 ページスクロール構成に統一したのに伴い削除済み）。`@media (prefers-reduced-motion: reduce)` ブロックで、OS 側の設定に応じて全アニメーション/トランジションを実質無効化（`animation-duration`/`transition-duration` を `0.01ms` に、`.fade-in` は即表示）。UI/UX レビュー対応で追加: `a, button` に `touch-action: manipulation`（タップ時の遅延・ダブルタップズーム抑止）、`a:focus-visible, button:focus-visible` のフォーカスリング、`.skip-link`（通常は画面外、フォーカス時のみ表示されるスキップリンク）、`.routeLoading`（`BlogPost` の `Suspense fallback` 用のローディング表示）。
 - **依存**: Google Fonts (DM Serif Display / DM Sans / Space Mono)
 - **参照元**: `main.jsx`, `App.jsx`
-
-### `src/App.css`
-- **役割**: Vite テンプレート由来の残骸 CSS（現状ほぼ未使用）。
 
 ---
 
@@ -69,11 +67,12 @@
 
 ### `useInfiniteCarousel.js`
 - **役割**: 「アイテムを3セット複製して並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル」の共通ロジック。元は `Projects.desktop.jsx` 専用の実装だったが、`Projects.mobile.jsx` でも同じ方式を使うことになったため抽出。
-- **主要**: `useInfiniteCarousel(itemCount, gap = 32)` → `{ trackRef, scroll }`
+- **主要**: `useInfiniteCarousel(itemCount, gap = 32)` → `{ trackRef, scroll, activeIndex }`
   - `itemCount`: 複製前(1セットぶん)の件数。呼び出し側は `[...items, ...items, ...items]` を自前で作り `trackRef` を付けた要素の子として並べる
   - 初回マウント時・resize 時に中央セットの先頭カードへ `scrollTo({ behavior: 'instant' })` で位置合わせ
   - `scroll` イベント監視(`requestAnimationFrame` でスロットル)で中央セット範囲外に出たら同じ相対位置へ `scrollTo({ behavior: 'instant' })` でワープ
   - `scroll(dir)`: `dir` 方向(-1/1)へ1カードぶん `scrollBy({ behavior: 'smooth' })`(ナビボタンの `onClick` から呼ぶ)
+  - `activeIndex`（UI/UX レビュー対応で追加）: 現在中央にあるカードの論理インデックス(0〜`itemCount`-1、中央セット基準の剰余)を `state` として保持。`scroll` イベントの同じ `requestAnimationFrame` コールバック内で `track.scrollLeft` から算出し直近値と異なる場合のみ更新。呼び出し側のドットインジケータ・`aria-live` 表示に使用
 - **参照元**: `Projects.desktop.jsx`(`gap: 32`), `Projects.mobile.jsx`(`gap: 20`)
 
 ---
@@ -84,13 +83,13 @@
 - **役割**: `useIsMobile()` で `NavDesktop` / `NavMobile` を振り分け。
 
 ### `Nav.mobile.jsx`
-- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ "About me"。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。
+- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ "About me"。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。`computeColor`（背景色計算本体）は `scroll` イベントごとに毎回実行すると高頻度になるため、`requestAnimationFrame` でスロットル化済み（UI/UX レビュー対応。`Nav.desktop.jsx` と同様）。
 - **主要 state**: `scrolled` / `navColor` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値）/ `sectionOrder`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: バーガーボタン・言語ドロップダウントリガーに `aria-expanded={open}` / `aria-expanded={langOpen}`。言語ドロップダウンは `Escape` キー押下で `setLangOpen(false)`。メニューリンクはクリックで `setOpen(false)`（メニューを閉じてから遷移）。
 - **依存**: `Nav.mobile.module.css`
 
 ### `Nav.desktop.jsx`
-- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。
+- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。`scroll`/`resize` イベントは `scheduleComputeColor` 経由で `requestAnimationFrame` にまとめ、`computeColor` 本体は1フレームにつき最大1回だけ実行するようスロットル化済み（UI/UX レビュー対応）。
 - **a11y**: `Nav.mobile.jsx` と同様に `aria-expanded`（バーガー/言語トリガー）と `Escape` での言語ドロップダウン閉じ処理あり。`isDarkColor` 判定のコメント誤りを修正済み。
 ### `Nav.{mobile,desktop}.module.css`
 - **役割**: 各バージョンのスタイル。`.scrolled` は `var(--nav-bg)`（JS から設定）を背景に使用し、`.dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るい色に切り替える（両バージョン共通の仕組み）。
@@ -120,22 +119,24 @@
 中身はハードコードされた表示専用コンポーネント。
 
 ### `src/components/About/`
-- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、本人写真）。表示データは `src/data/about.js` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
-- **写真**: `About.desktop.jsx` / `About.mobile.jsx` で `src/assets/about-photo.jpg` を `import aboutPhoto from '../../assets/about-photo.jpg'` として読み込み、`.photoInner` 内に `<img src={aboutPhoto} className={styles.photo} loading="lazy" />` で表示（NVIDIA GTC 会場前で撮影）。`.photo` は `width/height: 100%; object-fit: cover;` で `.photoInner`（aspect-ratio 4/3）にフィットさせる。旧プレースホルダーの `.photoText` スタイルは削除済み。
-- **a11y**: 実績アイコン（`achieveIcon` の絵文字）に `aria-hidden="true"`。
+- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、本人写真）。表示データは `src/data/about.jsx` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
+- **写真**: `About.desktop.jsx` / `About.mobile.jsx` で `src/assets/about-photo.jpg` を `import aboutPhoto from '../../assets/about-photo.jpg'` として読み込み、`.photoInner` 内に `<img src={aboutPhoto} className={styles.photo} loading="lazy" />` で表示（NVIDIA GTC 会場前で撮影）。`.photo` は `width/height: 100%; object-fit: cover;` で `.photoInner`（aspect-ratio 4/3）にフィットさせる。旧プレースホルダーの `.photoText` スタイルは削除済み。写真ファイルは品質50で再圧縮済み（448KB → 235KB、解像度 1600×1200 は不変）。
+- **a11y**: 実績アイコンは `<span className={styles.achieveIcon} aria-hidden="true">{icon}</span>` でラップ。`icon` は `src/data/about.jsx` 側で定義した Lucide 由来のインライン SVG（旧絵文字から置換。UI/UX レビュー対応で `about.js` → `about.jsx` にリネーム）。
 - **背景**: `.about` は desktop/mobile 共通で `linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%)`（Hero の終端色から連続。mobile は元々単色 `var(--white)` だったが 1 ページスクロール化に伴い desktop と揃えた）。
 
 ### `src/components/Skills/`
-- **役割**: スキルカード（Frontend / Mobile / Language / Tools）。表示データは `src/data/skills.js` の `categories` を desktop/mobile 両方から import。
-- **a11y**: カテゴリアイコン（絵文字）に `aria-hidden="true"`。
-- **背景**: `.skills` は desktop/mobile 共通で `linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%)`（About の終端色から連続。文字はこの範囲ではまだ十分明るいため色変更なし）。
+- **役割**: スキルカード（Frontend / Mobile / Language / Tools）。表示データは `src/data/skills.jsx` の `categories` を desktop/mobile 両方から import。
+- **a11y**: カテゴリアイコンは `<span className={styles.icon} aria-hidden="true">{cat.icon}</span>` でラップ。`icon` は `src/data/skills.jsx` 側で定義した Lucide 由来のインライン SVG（旧絵文字から置換。UI/UX レビュー対応で `skills.js` → `skills.jsx` にリネーム）。
+- **背景**: `.skills` は desktop/mobile 共通で `linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%)`（About の終端色から連続）。`.section-label` は新変数 `--clay-dark`(#7a4327) に変更し、この背景上でコントラスト比 4.97（WCAG AA 達成、UI/UX レビュー対応）。
 
 ### `src/components/Projects/`
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。表示データは `src/data/projects.js` の `projects` を desktop/mobile 両方から import。
 - **主要（`Projects.desktop.jsx` / `Projects.mobile.jsx` 共通）**: どちらも 3セット（`[...projects, ...projects, ...projects]` = `loopedProjects`）を並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル(共通ロジックは `src/hooks/useInfiniteCarousel.js` に抽出、後述)。前後の複製セット（`isDuplicate = i < projects.length || i >= projects.length * 2`）のカードには `aria-hidden="true"`、内部リンクには `tabIndex={-1}` を付与し、スクリーンリーダー/キーボード操作が複製カードに触れないようにしている。
   - **desktop**: カード幅固定 480px、← →ボタンはカルーセル左右端に絶対配置、`.track` は `overflow-x: auto`(指/トラックパッドでのドラッグスクロール可)。
   - **mobile**: カード幅 `92vw`(`max-width: 480px`)の1画面1カード表示(当初は 85vw + 左右チラ見え + 端フェードマスクだったが、実機で本文が窮屈だったため拡大しマスクも削除)。`.body` の padding は 20px(desktop の 28px より詰めて本文の実効幅を確保)。`.track` は `overflow-x: hidden` + `touch-action: pan-y` にして**指の横スワイプでは動かない**ようにし(iOS Safari の端スワイプ「戻る」ジェスチャーとの衝突回避)、← →ボタン(48×48px)のみで送る。ボタンからの `scrollTo`/`scrollBy` は `overflow: hidden` でもプログラム的に機能するため操作は可能。
-- **背景**: `.projects` は desktop/mobile 共通で `linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%)`（暗色化していくため「深海レイヤー」として `.projects :global(.section-title)` / `.projects :global(.section-label)` を明るい色に上書き。カード本体は `.body` が不透明な白背景のため影響なし）。
+  - **ドットインジケータ**(UI/UX レビュー対応で追加): `useInfiniteCarousel` が返す `activeIndex` を使い、カルーセル下に `aria-hidden="true"` のドット表示(`.dot`/`.dotActive` でサイズ・色を区別)と、スクリーンリーダー向けに `sr-only` の `<p aria-live="polite">{`プロジェクト ${activeIndex + 1} / ${projects.length}`}</p>` を追加。
+  - **コントラスト修正**(UI/UX レビュー対応): 背景 `#7ba7b5` 上では白系の文字色が物理的にコントラスト比 4.5 を満たせないため、見出し・`.section-label`・タグ・バッジ・サムネラベル・カルーセルのナビ矢印ボタンを濃色系の文字色に変更。tag/badge/techBadge/thumbLabel の極小フォントも `0.75rem` に引き上げ。
+- **背景**: `.projects` は desktop/mobile 共通で `linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%)`（暗色化していくため「深海レイヤー」として `.projects :global(.section-title)` / `.projects :global(.section-label)` を上書き。カード本体は `.body` が不透明な白背景のため影響なし）。
 
 ### `src/components/Blog/`
 - **役割**: ブログ記事一覧セクション。`src/lib/posts.js` から取得した記事メタデータをカード表示。記事が0件のときは `Coming soon...` を表示。記事カードのリンクは `#blog/<slug>` で詳細ページへ遷移。
@@ -143,7 +144,7 @@
   - `Blog.desktop.jsx` / `Blog.mobile.jsx`: posts 配列を map してカード描画。0件時は `.comingSoon` 表示
   - `Blog.desktop.module.css` / `Blog.mobile.module.css`: `.blog` / `.header` / `.list` / `.postLink` / `.postMeta` / `.date` / `.postTag` / `.postTitle` / `.postExcerpt` / `.readMore` / `.comingSoon`
 - **依存**: `lib/posts.js`, `hooks/useScrollReveal`
-- **背景**: `.blog` は desktop/mobile 共通で `linear-gradient(to bottom, #4a7795 0%, #243f5e 100%)`（暗色寄りのため「深海レイヤー」として見出しと記事一覧の文字色（`.postTitle` / `.postExcerpt` / `.date` / `.comingSoonText`、`.postLink` / `.comingSoon` の境界線）を明るい色に上書き。`.postTag` は不透明な白ピルのため対象外）。
+- **背景**: `.blog` は desktop/mobile 共通で `linear-gradient(to bottom, #4a7795 0%, #243f5e 100%)`（暗色寄りのため「深海レイヤー」として見出しと記事一覧の文字色（`.postTitle` / `.postExcerpt` / `.date` / `.comingSoonText`、`.postLink` / `.comingSoon` の境界線）を明るい色に上書き。`.postTag` は不透明な白ピルのため対象外）。コントラスト修正（UI/UX レビュー対応）: `.date`/`.postExcerpt` は `rgba(255,255,255,0.95)`（比 4.52）、`.postTitle` は `#f6f9fb`、`.readMore`（hover 時の `.postTitle` も含む）は `#fffae1`（比 4.59）。
 
 ### `src/components/BlogPost/`
 - **役割**: ブログ記事の詳細ページ。`#blog/<slug>` で表示される。`react-markdown` で本文をHTMLレンダリング、コードブロックは `rehype-highlight`（github-dark テーマ）でハイライト。
@@ -156,7 +157,7 @@
 
 ### `src/components/Contact/`
 - **役割**: 連絡先（メール + SNS）。1 ページスクロールの最終セクションとして常に表示（以前はモバイルのみ Hero フッター側にも同内容が重複表示される想定のコードがあったが、実際には旧 `body.home-locked` によりフッター自体が非表示になっていたため到達しない死んだ分岐だった。後述の `Footer.mobile.jsx` 参照）。SNS リンク・アイコンは `src/data/socials.jsx` の `socials` を desktop/mobile 両方から import。
-- **背景**: `.contact` は desktop/mobile 共通で `linear-gradient(to bottom, #243f5e 0%, #0d1c2e 100%)`（Blog の終端色から連続。mobile は元々 `var(--dark)`（#2a2a2a、グレー寄り）だったため desktop の紺色グラデに揃えた）。
+- **背景**: `.contact` は desktop/mobile 共通で `linear-gradient(to bottom, #243f5e 0%, #0d1c2e 100%)`（Blog の終端色から連続。mobile は元々 `var(--dark)`（#2a2a2a、グレー寄り）だったため desktop の紺色グラデに揃えた）。`.sub`（サブ文）は `rgba(255,255,255,0.7)`（比 6.19、UI/UX レビュー対応で確認済み）。
 
 ### `src/components/Footer/`
 - **役割**: フッター。`App.jsx` で常時表示（PC/モバイル共通配置）。
@@ -179,16 +180,16 @@
 - **主要**: `socials`: `{ name, url, icon(JSX) }[]`（GitHub / Twitter・X / Instagram / Zenn）。SNS URL は TODO コメントあり（実際のリンクへの差し替え待ち）
 - **参照元**: `Contact.desktop.jsx`, `Contact.mobile.jsx`
 
-### `skills.js`
-- **役割**: Skills セクションのカテゴリ別スキル一覧。
-- **主要**: `categories`: `{ icon, title, color, items[] }[]`（Frontend/Web, Mobile/App, Language, Tools）
+### `skills.jsx`
+- **役割**: Skills セクションのカテゴリ別スキル一覧。`.jsx` 拡張子は `icon` に Lucide 由来のインライン SVG(JSX)を含むため（旧 `skills.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）。
+- **主要**: `categories`: `{ icon(JSX), title, color, items[] }[]`（Frontend/Web, Mobile/App, Language, Tools）
 - **参照元**: `Skills.desktop.jsx`, `Skills.mobile.jsx`
 
-### `about.js`
-- **役割**: About セクションのプロフィール事実・実績。
+### `about.jsx`
+- **役割**: About セクションのプロフィール事実・実績。`.jsx` 拡張子は `achievements[].icon` に Lucide 由来のインライン SVG(JSX)を含むため（旧 `about.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）。
 - **主要**:
   - `facts`: `{ label, value }[]`（University/Faculty/Year/GPA/Location）
-  - `achievements`: `{ icon, title, sub, inProgress? }[]`
+  - `achievements`: `{ icon(JSX), title, sub, inProgress? }[]`
 - **参照元**: `About.desktop.jsx`, `About.mobile.jsx`
 
 ---

@@ -1,11 +1,13 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 
 // 3セット複製 [...items, ...items, ...items] を並べた無限ループカルーセルの共通ロジック。
 // itemCount には複製前(1セットぶん)の件数を渡す。gap はカード間の gap(px)。
 // 返り値の trackRef をスクロールコンテナに、scroll(dir) をナビボタンの onClick に渡す。
+// activeIndex は現在中央に来ている論理インデックス(0〜itemCount-1、中央セット基準の剰余)。
 export function useInfiniteCarousel(itemCount, gap = 32) {
   const trackRef = useRef(null)
   const itemWidthRef = useRef(0)
+  const [activeIndex, setActiveIndex] = useState(0)
 
   // 初期スクロール位置を中央セットの先頭に
   useEffect(() => {
@@ -48,6 +50,11 @@ export function useInfiniteCarousel(itemCount, gap = 32) {
         else if (track.scrollLeft > middleEnd - itemW / 2) {
           track.scrollTo({ left: track.scrollLeft - itemCount * itemW, behavior: 'instant' })
         }
+
+        // 現在中央付近にあるアイテムの論理インデックスを算出(中央セット基準の剰余)
+        const rawIndex = Math.round(track.scrollLeft / itemW)
+        const normalized = ((rawIndex % itemCount) + itemCount) % itemCount
+        setActiveIndex((prev) => (prev === normalized ? prev : normalized))
       })
     }
 
@@ -65,5 +72,5 @@ export function useInfiniteCarousel(itemCount, gap = 32) {
     track.scrollBy({ left: dir * amount, behavior: 'smooth' })
   }
 
-  return { trackRef, scroll }
+  return { trackRef, scroll, activeIndex }
 }

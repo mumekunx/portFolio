@@ -8,7 +8,7 @@ const loopedProjects = [...projects, ...projects, ...projects]
 
 export default function ProjectsDesktop() {
   useScrollReveal()
-  const { trackRef, scroll } = useInfiniteCarousel(projects.length, 32)
+  const { trackRef, scroll, activeIndex } = useInfiniteCarousel(projects.length, 32)
 
   return (
     <section className={`section ${styles.projects}`} id="projects">
@@ -93,6 +93,18 @@ export default function ProjectsDesktop() {
             →
           </button>
         </div>
+
+        <div className={styles.dots} aria-hidden="true">
+          {projects.map((p, i) => (
+            <span
+              key={p.id}
+              className={`${styles.dot} ${i === activeIndex ? styles.dotActive : ''}`}
+            />
+          ))}
+        </div>
+        <p className={styles.srOnly} aria-live="polite">
+          {`プロジェクト ${activeIndex + 1} / ${projects.length}`}
+        </p>
       </div>
     </section>
   )

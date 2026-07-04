@@ -8,7 +8,7 @@ const loopedProjects = [...projects, ...projects, ...projects]
 
 export default function ProjectsMobile() {
   useScrollReveal()
-  const { trackRef, scroll } = useInfiniteCarousel(projects.length, 20)
+  const { trackRef, scroll, activeIndex } = useInfiniteCarousel(projects.length, 20)
 
   return (
     <section className={`section ${styles.projects}`} id="projects">
@@ -93,6 +93,18 @@ export default function ProjectsMobile() {
               →
             </button>
           </div>
+
+          <div className={styles.dots} aria-hidden="true">
+            {projects.map((p, i) => (
+              <span
+                key={p.id}
+                className={`${styles.dot} ${i === activeIndex ? styles.dotActive : ''}`}
+              />
+            ))}
+          </div>
+          <p className={styles.srOnly} aria-live="polite">
+            {`プロジェクト ${activeIndex + 1} / ${projects.length}`}
+          </p>
         </div>
       </div>
     </section>

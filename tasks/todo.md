@@ -1,5 +1,12 @@
 # todo.md
 
+## 2026-07-05 About セクションに本人写真を追加
+- [x] src/assets/about-photo.jpg に写真を配置
+- [x] About.desktop.jsx / About.mobile.jsx のプレースホルダーを <img> に差し替え
+- [x] About.desktop.module.css / About.mobile.module.css に .photo 追加、不要な .photoText を削除
+- [x] update.md / detail.md を更新
+- [x] npx eslint src/components/About エラー0件を確認
+
 ## 2026-07-05 サイト全体改善(SEO/パフォーマンス/a11y/データ一元化)
 
 作業ブランチ: `feature/20260705-0014-site-improvements`

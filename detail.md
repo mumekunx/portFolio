@@ -130,7 +130,8 @@
 中身はハードコードされた表示専用コンポーネント。
 
 ### `src/components/About/`
-- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、写真プレースホルダー）。表示データは `src/data/about.js` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
+- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、本人写真）。表示データは `src/data/about.js` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
+- **写真**: `About.desktop.jsx` / `About.mobile.jsx` で `src/assets/about-photo.jpg` を `import aboutPhoto from '../../assets/about-photo.jpg'` として読み込み、`.photoInner` 内に `<img src={aboutPhoto} className={styles.photo} loading="lazy" />` で表示（NVIDIA GTC 会場前で撮影）。`.photo` は `width/height: 100%; object-fit: cover;` で `.photoInner`（aspect-ratio 4/3）にフィットさせる。旧プレースホルダーの `.photoText` スタイルは削除済み。
 - **a11y**: 実績アイコン（`achieveIcon` の絵文字）に `aria-hidden="true"`。
 
 ### `src/components/Skills/`
@@ -199,7 +200,7 @@
 - `favicon.svg` / `icons.svg`（SNS アイコン等の SVG スプライト）
 
 ### `src/assets/`
-- `hero.png`（Hero 用画像）, `react.svg` / `vite.svg`（テンプレート残骸）
+- `hero.png`（Hero 用画像）, `about-photo.jpg`（About セクションの本人写真、1600×1200・4:3・NVIDIA GTC 会場前で撮影）, `react.svg` / `vite.svg`（テンプレート残骸）
 
 ### `index.html`
 - **役割**: HTML テンプレート。`#root` と `main.jsx` の読み込み。`<title>Iwai Shuto | Portfolio</title>`、meta description、OGP（`og:title`/`og:description`/`og:type` 等、`og:image` は画像未確定のため TODO）、`twitter:card` を設定済み。

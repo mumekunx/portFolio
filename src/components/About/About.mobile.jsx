@@ -1,5 +1,6 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import { facts, achievements } from '../../data/about'
+import aboutPhoto from '../../assets/about-photo.jpg'
 import styles from './About.mobile.module.css'
 
 export default function AboutMobile() {
@@ -15,8 +16,12 @@ export default function AboutMobile() {
           <div className={`${styles.left} fade-in`}>
             <div className={styles.photoWrap}>
               <div className={styles.photoInner}>
-                {/* TODO: <img src="your-photo.jpg" alt="Iwai Shuto" /> に差し替え */}
-                <span className={styles.photoText}>Photo</span>
+                <img
+                  src={aboutPhoto}
+                  alt="NVIDIA GTC 会場前で撮影した岩井柊人"
+                  className={styles.photo}
+                  loading="lazy"
+                />
               </div>
             </div>
             <p className={`${styles.bioParagraph} fade-in fade-in-delay-1`}>

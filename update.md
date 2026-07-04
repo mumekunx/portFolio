@@ -1,4 +1,20 @@
 # Portfolio プロジェクト概要
+## 2026-07-05 01:22 — Wagamama Gourmet の Live Demo URL 変更
+**立案:** `src/data/projects.js` の Wagamama Gourmet(id: 1)の `demo` を YouTube URL から Vercel のデプロイ先 `https://frontend-pi-rosy-20.vercel.app/` に変更。影響範囲はデータファイル1件のみ。
+
+**完了** ✅ — `demo` フィールドを差し替え。ESLint エラー0件を確認。
+
+## 2026-07-05 01:19 — About セクションに本人写真を追加
+**立案:**
+- 依頼内容: About セクションのプレースホルダー写真（`.photoText` の "Photo" テキスト）を、NVIDIA GTC カンファレンス会場前で撮影した本人写真に差し替える。
+- 実装方針: 最適化済み写真（1600×1200, 4:3, JPEG）を `src/assets/about-photo.jpg` に配置し、Vite のアセットパイプラインを通す import 形式で `<img>` タグに差し替える。`.photoInner` の枠は aspect-ratio 4/3 のまま維持（写真も 4:3 のためトリミングはほぼ発生しない）。不要になった `.photoText` スタイルは削除。
+- 影響範囲: `src/assets/about-photo.jpg`（新規）, `src/components/About/About.desktop.jsx`, `src/components/About/About.mobile.jsx`, `src/components/About/About.desktop.module.css`, `src/components/About/About.mobile.module.css`, `detail.md`, `tasks/todo.md`
+
+**完了** ✅
+- `src/assets/about-photo.jpg` に写真を配置。`About.desktop.jsx` / `About.mobile.jsx` の両方でプレースホルダー（`.photoText` の "Photo" テキスト＋TODOコメント）を `<img src={aboutPhoto} alt="NVIDIA GTC 会場前で撮影した岩井柊人" className={styles.photo} loading="lazy" />` に差し替え。
+- `About.desktop.module.css` / `About.mobile.module.css` の `.photoText` を `.photo`（`width/height: 100%; object-fit: cover; display: block;`）に置き換え。`.photoText` は他コンポーネントから未参照であることを確認済み。
+- 検証: `npx eslint src/components/About` エラー0件。
+
 ## 2026-07-05 00:15 — サイト全体改善(SEO/パフォーマンス/a11y/データ一元化)
 **立案:**
 - サイト全体の改善点レビューで挙がった項目のうち、ユーザー素材が不要なものを Sonnet サブエージェント並列で実装する。

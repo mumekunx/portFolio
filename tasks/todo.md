@@ -1,5 +1,19 @@
 # todo.md
 
+## 2026-07-05 スマホ版 Projects を PC と同じカルーセルに変更
+- [x] update.md に立案エントリ追記
+- [x] Projects.desktop.jsx / .module.css のカルーセル実装を確認
+- [x] src/hooks/useInfiniteCarousel.js に共通ロジックを抽出
+- [x] Projects.desktop.jsx を useInfiniteCarousel 利用にリファクタ(挙動は変えない)
+- [x] Projects.mobile.jsx を同方式のカルーセルに書き換え(3セット複製・aria-hidden・useInfiniteCarousel 利用)
+- [x] Projects.mobile.module.css: カード幅 85vw(max-width あり)、track は overflow-x:hidden + touch-action:pan-y でスワイプ無効化、← →ボタン(48px)を配置
+- [x] update.md に完了追記
+- [x] detail.md を更新(Projects セクション・useInfiniteCarousel.js)
+- [x] tasks/todo.md にタスク追加+チェック
+- [x] npx eslint src/components/Projects src/hooks エラー0件を確認
+- [x] npm run build 成功を確認
+- [x] Playwright は node_modules 未インストールのため省略
+
 ## 2026-07-05 スマホ版をPC版と同じ1ページスクロール構成に統一
 - [x] update.md に立案エントリ追記
 - [x] App.jsx の isMobile 分岐を削除、共通で Nav+main(BlogPost or 全セクション)+Footer を描画

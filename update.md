@@ -1,5 +1,21 @@
 # Portfolio プロジェクト概要
-## 2026-07-05 01:46 — スマホ版をPC版と同じ1ページスクロール構成に統一
+## 2026-07-05 02:50 — スマホ版 Projects を PC と同じカルーセルに変更
+**立案:**
+- 依頼内容: スマホ版 Projects セクション(現状はただの縦積みグリッド)を、PC 版(`Projects.desktop.jsx`)と同じ「3セット複製の無限ループカルーセル・中央1枚が主役+左右チラ見え・← →ボタンで送る」表示に変更する。ただし操作は**ボタンのみ**にし、横スワイプでは動かないようにする(iOS Safari の端スワイプ「戻る」ジェスチャーと衝突し誤操作になるため)。
+- 実装方針:
+  1. PC 版のカルーセルロジック(3セット複製、中央セットへの初期位置合わせ、セット外に出たら同位置へワープ、`scroll(dir)` によるボタン送り)を `src/hooks/useInfiniteCarousel.js` に共通フックとして抽出し、`Projects.desktop.jsx` はこのフックを使うようリファクタ(挙動は変えない)。
+  2. `Projects.mobile.jsx` を同じ 3 セット複製カルーセル構造(`aria-hidden`/`tabIndex=-1` の複製マーキングも同様)に書き換え、上記フックを利用する。データは既存どおり `src/data/projects.js` から import。
+  3. `Projects.mobile.module.css`: カード幅を `85vw`(`max-width` あり)にして中央主役+左右チラ見えを表現。トラックは `overflow-x: hidden` + `touch-action: pan-y` にして指の横スワイプでは動かないようにし、← →ボタン(48px、タップしやすいサイズ)をカルーセル下に配置してボタン操作のみ有効にする。
+- 影響範囲: `src/hooks/useInfiniteCarousel.js`(新規), `src/components/Projects/Projects.desktop.jsx`, `src/components/Projects/Projects.mobile.jsx`, `src/components/Projects/Projects.mobile.module.css`, `update.md`, `detail.md`, `tasks/todo.md`
+
+**完了** ✅
+- `src/hooks/useInfiniteCarousel.js` を新規作成: 3セット複製カルーセルの共通ロジック(`itemCount`/`gap` を受け取り `{ trackRef, scroll }` を返す)。中身は元の `Projects.desktop.jsx` の実装をそのまま移設(初期位置合わせ・スクロール外れ時のワープ・resize 対応・`scroll(dir)`)。
+- `Projects.desktop.jsx` を上記フック利用にリファクタ。JSX・CSS・挙動は変更なし(既存の無限ループ・aria-hidden 仕様を維持していることを確認)。
+- `Projects.mobile.jsx` を PC 版と同じ 3 セット複製(`loopedProjects`)・`isDuplicate` 判定(`aria-hidden`/リンク `tabIndex=-1`)を持つカルーセルに書き換え。`useInfiniteCarousel(projects.length, 20)` を使用。← →ボタンはカルーセル下の `.navRow` にまとめて配置(PC 版はカルーセル左右端に絶対配置だが、モバイルは指の届く位置を優先しレイアウトを変えた)。
+- `Projects.mobile.module.css`: `.grid` を `.carousel`/`.track`/`.navRow`/`.navBtn` に置き換え。`.card` は `flex: 0 0 85vw; max-width: 340px; scroll-snap-align: center;` に変更。`.track` は `overflow-x: hidden; touch-action: pan-y; scroll-snap-type: x mandatory;`(スワイプでは動かず、ボタンからの `scrollTo`/`scrollBy` はプログラム的にスクロールできるため機能する)。左右チラ見え強調のため PC 版と同様の `mask-image` フェードも追加。`.navBtn` は 48×48px(タップ target 44px 以上を満たす)。`.body`/`.thumbnail` 等の見た目スタイルは既存のまま変更なし。
+- 検証: `npx eslint src/components/Projects src/hooks` エラー0件。`npm run build` 成功(527 modules transformed)。Playwright は `node_modules` に未インストールのためヘッドレスブラウザでの実機確認は省略(指示どおり)。
+
+
 **立案:**
 - 依頼内容: スマホ版の表示構成を PC 版と同じ「1ページ縦スクロール」に統一する。現状はスマホのみ `App.jsx` が `MobileRouter` を描画し、Hero をランディング(`body.home-locked` でスクロール固定・Footer 非表示)、`#about` 等のハッシュで各セクションを「別ページ」として表示(戻るボタン付き)する構成になっている。各コンポーネントの mobile バリアント(縦積みレイアウト等)自体は維持し、ルーティング構造だけを PC 同様の1ページスクロールに統一する。
 - 実装方針:

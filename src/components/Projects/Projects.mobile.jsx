@@ -1,9 +1,14 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { useInfiniteCarousel } from '../../hooks/useInfiniteCarousel'
 import { projects } from '../../data/projects'
 import styles from './Projects.mobile.module.css'
 
+// 3セット並べて中央セットを基準に無限ループを表現する(PC 版と同じ方式)
+const loopedProjects = [...projects, ...projects, ...projects]
+
 export default function ProjectsMobile() {
   useScrollReveal()
+  const { trackRef, scroll } = useInfiniteCarousel(projects.length, 20)
 
   return (
     <section className={`section ${styles.projects}`} id="projects">
@@ -11,11 +16,15 @@ export default function ProjectsMobile() {
         <p className="section-label">Projects</p>
         <h2 className="section-title">Selected Works</h2>
 
-        <div className={styles.grid}>
-          {projects.map((p, i) => (
+        <div className={styles.carousel}>
+          <div className={styles.track} ref={trackRef}>
+          {loopedProjects.map((p, i) => {
+            const isDuplicate = i < projects.length || i >= projects.length * 2
+            return (
             <article
-              key={p.id}
-              className={`${styles.card} ${styles[`card--${p.accent}`]} fade-in fade-in-delay-${(i % 2) + 1}`}
+              key={`${p.id}-${i}`}
+              className={`${styles.card} ${styles[`card--${p.accent}`]}`}
+              aria-hidden={isDuplicate ? 'true' : undefined}
             >
               <div className={`${styles.thumbnail} ${styles[`thumb--${p.accent}`]}`}>
                 {/* TODO: スクリーンショットや OGP 画像を追加 */}
@@ -43,6 +52,7 @@ export default function ProjectsMobile() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.linkBtn}
+                      tabIndex={isDuplicate ? -1 : undefined}
                     >
                       GitHub
                     </a>
@@ -53,6 +63,7 @@ export default function ProjectsMobile() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`${styles.linkBtn} ${styles.linkBtnPrimary}`}
+                      tabIndex={isDuplicate ? -1 : undefined}
                     >
                       Live Demo ↗
                     </a>
@@ -60,7 +71,28 @@ export default function ProjectsMobile() {
                 </div>
               </div>
             </article>
-          ))}
+            )
+          })}
+          </div>
+
+          <div className={styles.navRow}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => scroll(-1)}
+              aria-label="前のプロジェクト"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => scroll(1)}
+              aria-label="次のプロジェクト"
+            >
+              →
+            </button>
+          </div>
         </div>
       </div>
     </section>

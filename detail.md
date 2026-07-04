@@ -67,6 +67,15 @@
 - **主要**: `useScrollReveal(selector = '.fade-in')`
 - **参照元**: 各セクションコンポーネント（フェードイン演出を使うもの）
 
+### `useInfiniteCarousel.js`
+- **役割**: 「アイテムを3セット複製して並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル」の共通ロジック。元は `Projects.desktop.jsx` 専用の実装だったが、`Projects.mobile.jsx` でも同じ方式を使うことになったため抽出。
+- **主要**: `useInfiniteCarousel(itemCount, gap = 32)` → `{ trackRef, scroll }`
+  - `itemCount`: 複製前(1セットぶん)の件数。呼び出し側は `[...items, ...items, ...items]` を自前で作り `trackRef` を付けた要素の子として並べる
+  - 初回マウント時・resize 時に中央セットの先頭カードへ `scrollTo({ behavior: 'instant' })` で位置合わせ
+  - `scroll` イベント監視(`requestAnimationFrame` でスロットル)で中央セット範囲外に出たら同じ相対位置へ `scrollTo({ behavior: 'instant' })` でワープ
+  - `scroll(dir)`: `dir` 方向(-1/1)へ1カードぶん `scrollBy({ behavior: 'smooth' })`(ナビボタンの `onClick` から呼ぶ)
+- **参照元**: `Projects.desktop.jsx`(`gap: 32`), `Projects.mobile.jsx`(`gap: 20`)
+
 ---
 
 ## ナビゲーション (`src/components/Nav/`)
@@ -123,7 +132,9 @@
 
 ### `src/components/Projects/`
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。表示データは `src/data/projects.js` の `projects` を desktop/mobile 両方から import。
-- **主要（`Projects.desktop.jsx`）**: 3セット（`[...projects, ...projects, ...projects]` = `loopedProjects`）を並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル。前後の複製セット（`isDuplicate = i < projects.length || i >= projects.length * 2`）のカードには `aria-hidden="true"`、内部リンクには `tabIndex={-1}` を付与し、スクリーンリーダー/キーボード操作が複製カードに触れないようにしている。
+- **主要（`Projects.desktop.jsx` / `Projects.mobile.jsx` 共通）**: どちらも 3セット（`[...projects, ...projects, ...projects]` = `loopedProjects`）を並べ、中央セットを基準にスクロール位置をワープさせる無限ループカルーセル(共通ロジックは `src/hooks/useInfiniteCarousel.js` に抽出、後述)。前後の複製セット（`isDuplicate = i < projects.length || i >= projects.length * 2`）のカードには `aria-hidden="true"`、内部リンクには `tabIndex={-1}` を付与し、スクリーンリーダー/キーボード操作が複製カードに触れないようにしている。
+  - **desktop**: カード幅固定 480px、← →ボタンはカルーセル左右端に絶対配置、`.track` は `overflow-x: auto`(指/トラックパッドでのドラッグスクロール可)。
+  - **mobile**: カード幅 `85vw`(`max-width: 340px`)で中央1枚を主役に左右チラ見え。`.track` は `overflow-x: hidden` + `touch-action: pan-y` にして**指の横スワイプでは動かない**ようにし(iOS Safari の端スワイプ「戻る」ジェスチャーとの衝突回避)、← →ボタン(48×48px)のみで送る。ボタンからの `scrollTo`/`scrollBy` は `overflow: hidden` でもプログラム的に機能するため操作は可能。
 - **背景**: `.projects` は desktop/mobile 共通で `linear-gradient(to bottom, #7ba7b5 0%, #4a7795 100%)`（暗色化していくため「深海レイヤー」として `.projects :global(.section-title)` / `.projects :global(.section-label)` を明るい色に上書き。カード本体は `.body` が不透明な白背景のため影響なし）。
 
 ### `src/components/Blog/`

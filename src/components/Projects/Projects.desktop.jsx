@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
+import { useInfiniteCarousel } from '../../hooks/useInfiniteCarousel'
 import { projects } from '../../data/projects'
 import styles from './Projects.desktop.module.css'
 
@@ -8,67 +8,7 @@ const loopedProjects = [...projects, ...projects, ...projects]
 
 export default function ProjectsDesktop() {
   useScrollReveal()
-  const trackRef = useRef(null)
-  const cardWidthRef = useRef(0)
-
-  // 初期スクロール位置を中央セットの先頭に
-  useEffect(() => {
-    const track = trackRef.current
-    if (!track) return
-
-    const positionToMiddle = () => {
-      const card = track.children[projects.length] // 中央セットの先頭
-      if (!card) return
-      cardWidthRef.current = card.offsetWidth + 32 // gap 32px
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2
-      track.scrollTo({ left: cardCenter - track.clientWidth / 2, behavior: 'instant' })
-    }
-
-    positionToMiddle()
-    window.addEventListener('resize', positionToMiddle)
-    return () => window.removeEventListener('resize', positionToMiddle)
-  }, [])
-
-  // スクロールが中央セットの外に出たら、中央セットの同じ相対位置へワープ
-  useEffect(() => {
-    const track = trackRef.current
-    if (!track) return
-
-    const setLen = projects.length
-    let raf = null
-
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = null
-        const cardW = cardWidthRef.current
-        if (!cardW) return
-        const middleStart = setLen * cardW
-        const middleEnd = setLen * 2 * cardW
-        // 前セットに入ったら中央セットへ
-        if (track.scrollLeft < middleStart - cardW / 2) {
-          track.scrollTo({ left: track.scrollLeft + setLen * cardW, behavior: 'instant' })
-        }
-        // 後セットに入ったら中央セットへ
-        else if (track.scrollLeft > middleEnd - cardW / 2) {
-          track.scrollTo({ left: track.scrollLeft - setLen * cardW, behavior: 'instant' })
-        }
-      })
-    }
-
-    track.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      track.removeEventListener('scroll', onScroll)
-      if (raf) cancelAnimationFrame(raf)
-    }
-  }, [])
-
-  const scroll = (dir) => {
-    const track = trackRef.current
-    if (!track) return
-    const amount = cardWidthRef.current || track.clientWidth * 0.8
-    track.scrollBy({ left: dir * amount, behavior: 'smooth' })
-  }
+  const { trackRef, scroll } = useInfiniteCarousel(projects.length, 32)
 
   return (
     <section className={`section ${styles.projects}`} id="projects">

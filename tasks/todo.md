@@ -1,5 +1,16 @@
 # todo.md
 
+## 2026-07-06 GitHub Pages → Cloudflare Pages 独自ドメイン移行(vite base 変更)
+
+作業ブランチ: `feature/20260706-1721-cloudflare-custom-domain`
+
+- [x] update.md に立案エントリ追記
+- [x] vite.config.js の base を dev/build 共通で '/' に変更(command 分岐を削除)
+- [x] npm run build 成功確認
+- [x] dist/index.html のアセット参照が /portFolio/ 無しの / 起点になっていることを確認
+- [x] update.md に完了追記
+- [x] detail.md の vite.config.js 項目を更新
+
 ## 2026-07-06 ナビロゴをスクロール位置の見出しに同期
 
 作業ブランチ: `feature/20260706-1458-nav-logo-sync`

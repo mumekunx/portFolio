@@ -1,4 +1,17 @@
 # Portfolio プロジェクト概要
+## 2026-07-06 17:23 — GitHub Pages → Cloudflare Pages 独自ドメイン移行(vite base 変更)
+
+作業ブランチ: `feature/20260706-1721-cloudflare-custom-domain`
+
+**立案:**
+- 依頼: GitHub Pages(`https://mumekunx.github.io/portFolio/`)配信から、Cloudflare Pages の独自ドメイン `portfolio.cypr.jp`(サブドメインのルート)配信へ移行する。サブドメインルート配信になるため、Vite のビルド時 base を `/portFolio/` から `/` に変更する。
+- 実装方針: `vite.config.js` の `command === 'build' ? '/portFolio/' : '/'` という分岐をやめ、dev・build ともに `base: '/'` に統一する(ハッシュルーティングのアプリのため base '/' で問題なし)。
+- 影響範囲: `vite.config.js`、`update.md`、`detail.md`。`package.json` の `homepage` / `gh-pages` デプロイスクリプトは今回は触らない(GitHub Pages 用の設定として残置。Cloudflare Pages 移行後は不要になるため後日別途整理予定)。実際の Cloudflare Pages 側デプロイ設定・カスタムドメイン(`portfolio.cypr.jp`)割り当てはユーザーが Cloudflare ダッシュボードで行う。
+
+**完了** ✅
+- `vite.config.js` の `defineConfig(({ command }) => ({...}))` を `defineConfig({...})` に簡素化し、`base` を常に `'/'` に変更。コメントも Cloudflare Pages 移行の実態に合わせて更新。
+- `npm run build` 成功を確認。`dist/index.html` 内のアセット参照(`/assets/index-*.js`、`/assets/index-*.css`、`href="/favicon.svg"`)がすべて `/portFolio/` プレフィックスなしの `/` 起点になっていることを確認。
+
 ## 2026-07-06 14:58 — ナビロゴをスクロール位置の見出しに同期
 **立案:**
 - 依頼: 左上ナビのロゴを、スクロール位置に応じて現在表示中セクションの大見出しに切り替える(常に固定テキストではなく、hero→"About me"、about→"About Me"、skills→"What I Work With"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect" のように動的表示)。

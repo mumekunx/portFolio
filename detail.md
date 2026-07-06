@@ -209,7 +209,7 @@
 - **役割**: HTML テンプレート。`#root` と `main.jsx` の読み込み。`<title>Iwai Shuto | Portfolio</title>`、meta description、OGP（`og:title`/`og:description`/`og:type` 等、`og:image` は画像未確定のため TODO）、`twitter:card` を設定済み。
 
 ### `vite.config.js`
-- **役割**: Vite 設定。`base` を dev は `/`、build 時のみ `/portFolio/`（GitHub Pages 用）に条件分岐。
+- **役割**: Vite 設定。Cloudflare Pages のサブドメインルート（`portfolio.cypr.jp`）配信のため、dev・build ともに `base: '/'`。
 
 ### `package.json`
 - **役割**: 依存・スクリプト。`dev` / `build` / `lint` / `preview` / `deploy`(gh-pages)。`homepage` は `https://mumekunx.github.io/portFolio/`。`gh-pages` はビルド成果物には含まれないため `dependencies` から `devDependencies` へ移動済み。

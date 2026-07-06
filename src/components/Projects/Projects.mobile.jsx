@@ -17,6 +17,15 @@ export default function ProjectsMobile() {
         <h2 className="section-title">Selected Works</h2>
 
         <div className={styles.carousel}>
+          <button
+            type="button"
+            className={`${styles.navBtn} ${styles.navPrev}`}
+            onClick={() => scroll(-1)}
+            aria-label="前のプロジェクト"
+          >
+            ←
+          </button>
+
           <div className={styles.track} ref={trackRef}>
           {loopedProjects.map((p, i) => {
             const isDuplicate = i < projects.length || i >= projects.length * 2
@@ -75,24 +84,14 @@ export default function ProjectsMobile() {
           })}
           </div>
 
-          <div className={styles.navRow}>
-            <button
-              type="button"
-              className={styles.navBtn}
-              onClick={() => scroll(-1)}
-              aria-label="前のプロジェクト"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              className={styles.navBtn}
-              onClick={() => scroll(1)}
-              aria-label="次のプロジェクト"
-            >
-              →
-            </button>
-          </div>
+          <button
+            type="button"
+            className={`${styles.navBtn} ${styles.navNext}`}
+            onClick={() => scroll(1)}
+            aria-label="次のプロジェクト"
+          >
+            →
+          </button>
 
           <div className={styles.dots} aria-hidden="true">
             {projects.map((p, i) => (

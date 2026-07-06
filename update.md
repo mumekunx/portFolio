@@ -24,6 +24,7 @@
 - Nav の `computeColor` を `requestAnimationFrame` でスロットル化(desktop/mobile 両方)。
 - `about-photo.jpg` を品質50で再圧縮(448KB → 235KB、解像度は 1600×1200 のまま不変)。
 - 検証: `npm run lint` / `npm run build` 成功。
+- **追記(スマホ実機確認後の追加修正)**: ① モバイルのナビボタンを下部 `.navRow` から desktop 同様の左右絶対配置(縦中央・48px 維持)に変更し、`.card` を 92vw/480px → 80vw/420px に縮小してボタンの居場所を確保。② 「フォトブース落書き App」カード(github/demo とも null でリンク行が無く本文が短い)の下部に背景が透けていた問題を、mobile の `.body { flex: 1 }` で白背景を下端まで伸ばして修正(desktop は既に flex:1 で問題なし)。ヘッドレス Chromium のスクリーンショットで両修正を目視確認、eslint / build 成功。
 
 ## 2026-07-05 02:50 — スマホ版 Projects を PC と同じカルーセルに変更
 **立案:**

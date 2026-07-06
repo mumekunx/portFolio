@@ -27,6 +27,16 @@ const sectionColors = {
 
 const sectionOrder = ['hero', 'about', 'skills', 'projects', 'blog', 'contact']
 
+// 各セクションの大見出し。ロゴ表示テキストに使う(実際の見出しと一致させること)
+const sectionTitles = {
+  hero: 'About me',
+  about: 'About Me',
+  skills: 'What I Work With',
+  projects: 'Selected Works',
+  blog: 'Recent Posts',
+  contact: "Let's Connect",
+}
+
 function lerp(a, b, t) {
   return Math.round(a + (b - a) * t)
 }
@@ -44,6 +54,7 @@ function isDarkColor([r, g, b]) {
 export default function NavMobile() {
   const [scrolled, setScrolled] = useState(false)
   const [navColor, setNavColor] = useState([0xf7, 0xf3, 0xee])
+  const [activeSection, setActiveSection] = useState('hero')
   const [open, setOpen] = useState(false)
   const [lang, setLang] = useState('ja')
   const [langOpen, setLangOpen] = useState(false)
@@ -77,6 +88,7 @@ export default function NavMobile() {
 
       const colors = sectionColors[activeId] || sectionColors.hero
       setNavColor(lerpColor(colors[0], colors[1], progress))
+      setActiveSection(activeId)
     }
 
     // スクロール/リサイズ発火をフレームごとに1回へまとめる
@@ -130,7 +142,11 @@ export default function NavMobile() {
     >
       <div className={`container ${styles.inner}`}>
         {/* TODO: 自分の名前のイニシャルや略称に変更 */}
-        <a href="#" className={styles.logo}>About me</a>
+        <a href="#" className={styles.logo}>
+          <span key={activeSection} className={styles.logoText}>
+            {sectionTitles[activeSection] ?? 'About me'}
+          </span>
+        </a>
 
         <div className={`${styles.menuOverlay} ${open ? styles.open : ''}`}>
           <ul className={styles.links}>

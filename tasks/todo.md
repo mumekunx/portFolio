@@ -1,5 +1,19 @@
 # todo.md
 
+## 2026-07-06 ナビロゴをスクロール位置の見出しに同期
+
+作業ブランチ: `feature/20260706-1458-nav-logo-sync`
+
+- [x] update.md に立案エントリ追記
+- [x] Nav.desktop.jsx / Nav.mobile.jsx に sectionTitles マップを追加(実際の各セクション見出しと一致確認)
+- [x] computeColor 内の activeId を activeSection state に保存(色計算ロジックは不変)
+- [x] ロゴ表示を sectionTitles[activeSection] に変更、key={activeSection} + CSS logoFade でフェード切り替え
+- [x] Nav.desktop.module.css / Nav.mobile.module.css: .logo に white-space:nowrap / overflow:hidden / text-overflow:ellipsis / max-width を追加、モバイルの logo font-size を縮小
+- [x] npm run lint / npm run build 成功確認
+- [x] ヘッドレスブラウザで desktop/mobile 全6セクションのロゴ表示を目視確認
+- [x] update.md に完了追記
+- [x] detail.md を更新
+
 ## 2026-07-05 UI/UXレビュー指摘の一括修正
 
 作業ブランチ: `feature/20260705-0311-uiux-review-fixes`

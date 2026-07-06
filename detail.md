@@ -83,16 +83,19 @@
 - **役割**: `useIsMobile()` で `NavDesktop` / `NavMobile` を振り分け。
 
 ### `Nav.mobile.jsx`
-- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ "About me"。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。`computeColor`（背景色計算本体）は `scroll` イベントごとに毎回実行すると高頻度になるため、`requestAnimationFrame` でスロットル化済み（UI/UX レビュー対応。`Nav.desktop.jsx` と同様）。
-- **主要 state**: `scrolled` / `navColor` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値）/ `sectionOrder`、関数 `lerp` / `lerpColor` / `isDarkColor`
+- **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。`computeColor`（背景色計算本体）は `scroll` イベントごとに毎回実行すると高頻度になるため、`requestAnimationFrame` でスロットル化済み（UI/UX レビュー対応。`Nav.desktop.jsx` と同様）。
+- **ロゴのセクション見出し同期**: `sectionTitles`（hero→"About me"、about→"About Me"、skills→"What I Work With"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect"）マップを追加。`computeColor` が背景色補間のために判定している現在セクション `activeId` を `setActiveSection` で state 化し、ロゴは `sectionTitles[activeSection] ?? 'About me'` を表示。`<span key={activeSection}>` で要素を差し替え、`Nav.mobile.module.css` の `logoFade`（opacity 200ms）でフェード切り替えする。色計算ロジック自体（`sectionColors`/`lerpColor`/`isDarkColor`）は不変。
+- **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値）/ `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: バーガーボタン・言語ドロップダウントリガーに `aria-expanded={open}` / `aria-expanded={langOpen}`。言語ドロップダウンは `Escape` キー押下で `setLangOpen(false)`。メニューリンクはクリックで `setOpen(false)`（メニューを閉じてから遷移）。
 - **依存**: `Nav.mobile.module.css`
 
 ### `Nav.desktop.jsx`
 - **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。`scroll`/`resize` イベントは `scheduleComputeColor` 経由で `requestAnimationFrame` にまとめ、`computeColor` 本体は1フレームにつき最大1回だけ実行するようスロットル化済み（UI/UX レビュー対応）。
+- **ロゴのセクション見出し同期**: `Nav.mobile.jsx` と同じ `sectionTitles` マップと `activeSection` state による仕組みを持つ（実装内容は上記 `Nav.mobile.jsx` の項を参照）。
+- **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors` / `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: `Nav.mobile.jsx` と同様に `aria-expanded`（バーガー/言語トリガー）と `Escape` での言語ドロップダウン閉じ処理あり。`isDarkColor` 判定のコメント誤りを修正済み。
 ### `Nav.{mobile,desktop}.module.css`
-- **役割**: 各バージョンのスタイル。`.scrolled` は `var(--nav-bg)`（JS から設定）を背景に使用し、`.dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るい色に切り替える（両バージョン共通の仕組み）。
+- **役割**: 各バージョンのスタイル。`.scrolled` は `var(--nav-bg)`（JS から設定）を背景に使用し、`.dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るい色に切り替える（両バージョン共通の仕組み）。`.logo` はセクション見出し同期でテキスト長が変化するため `white-space: nowrap` / `overflow: hidden` / `text-overflow: ellipsis` / `max-width`（desktop: 40vw, mobile: 54vw）を設定してレイアウト崩れを防止。モバイルは長い見出しが収まるよう `.logo` の `font-size` を 1.5rem → 1.15rem に縮小。`.logoText` に `logoFade`（opacity 0→1, 200ms ease）の `@keyframes` を適用し、`key={activeSection}` による要素差し替え時に軽くフェードする。
 
 ---
 

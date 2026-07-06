@@ -30,16 +30,33 @@
 }
 
 .logo {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 40vw;
   font-family: var(--font-display);
   font-size: 1.5rem;
   color: var(--dark);
   letter-spacing: -0.02em;
   margin-right: 48px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: color var(--transition);
 }
 
 .dark .logo {
   color: #eaf1f4;
+}
+
+.logoText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: logoFade 200ms ease;
+}
+
+@keyframes logoFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .menuOverlay {

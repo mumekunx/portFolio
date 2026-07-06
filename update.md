@@ -1,4 +1,18 @@
 # Portfolio プロジェクト概要
+## 2026-07-06 14:58 — ナビロゴをスクロール位置の見出しに同期
+**立案:**
+- 依頼: 左上ナビのロゴを、スクロール位置に応じて現在表示中セクションの大見出しに切り替える(常に固定テキストではなく、hero→"About me"、about→"About Me"、skills→"What I Work With"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect" のように動的表示)。
+- 実装方針: 既存の `computeColor`(背景色同期用・`requestAnimationFrame` スロットル済み)がセクション判定のために求めている `activeId` を state 化して再利用し、色計算ロジック自体は変更しない。ロゴ切り替え時は軽いフェードで違和感を減らす。ロゴ文字数が見出しごとに変わるため、レイアウト崩れ対策(省略・最大幅)も合わせて行う。
+- 影響範囲: `src/components/Nav/Nav.desktop.jsx`, `src/components/Nav/Nav.mobile.jsx`, `src/components/Nav/Nav.desktop.module.css`, `src/components/Nav/Nav.mobile.module.css`, `update.md`, `detail.md`, `tasks/todo.md`
+- ブランチ: `feature/20260706-1458-nav-logo-sync`
+
+**完了** ✅
+- `Nav.desktop.jsx` / `Nav.mobile.jsx` に `sectionTitles` マップ(hero/about/skills/projects/blog/contact → 各セクションの実見出しテキスト)を追加。実際の各コンポーネントの大見出しと一致することを確認済み。
+- 既存の `computeColor` 内で求めていた `activeId` を `setActiveSection` で state (`activeSection`) に保存。色計算(`sectionColors`/`lerpColor`/`isDarkColor`)のロジックは変更なし。
+- ロゴ表示は `sectionTitles[activeSection] ?? 'About me'`。`<span key={activeSection}>` で要素を差し替え、CSS の `logoFade` キーフレーム(opacity 200ms)で切り替え時にフェードする(`prefers-reduced-motion` はグローバル対応により自動的に無効化される)。
+- CSS: `.logo` に `white-space: nowrap` / `overflow: hidden` / `text-overflow: ellipsis` / `max-width`(desktop 40vw, mobile 54vw)を追加して長い見出しでもレイアウトが崩れないようにした。モバイルの `.logo` font-size を 1.5rem → 1.15rem に縮小(長い見出しの収まり対策)。
+- 検証: `npm run lint` 0件、`npm run build` 成功。ヘッドレスブラウザで desktop/mobile 双方、全6セクションのロゴ表示を目視確認(モバイルでも長い見出しが崩れず収まることを確認)。
+
 ## 2026-07-05 03:11 — UI/UXレビュー指摘の一括修正
 **立案:**
 - 依頼: ui-ux-pro-max スキルによるサイト全体レビューで判明した問題の修正(ユーザー承認済み)

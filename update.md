@@ -11,6 +11,7 @@
 **完了** ✅
 - `vite.config.js` の `defineConfig(({ command }) => ({...}))` を `defineConfig({...})` に簡素化し、`base` を常に `'/'` に変更。コメントも Cloudflare Pages 移行の実態に合わせて更新。
 - `npm run build` 成功を確認。`dist/index.html` 内のアセット参照(`/assets/index-*.js`、`/assets/index-*.css`、`href="/favicon.svg"`)がすべて `/portFolio/` プレフィックスなしの `/` 起点になっていることを確認。
+- `.nvmrc`(内容 `22`)を追加しビルド Node を固定。Cloudflare Pages のデフォルト Node が古く、Vite 8 が Node 20.19+/22.12+ を要求するための対応(CYPR.Web と同じ対応)。
 
 ## 2026-07-06 14:58 — ナビロゴをスクロール位置の見出しに同期
 **立案:**

@@ -4,7 +4,7 @@
 「なぜ・どう動くか」は teach.md、進捗ログは update.md、引き継ぎは baton.md を参照。
 
 > 各セクションコンポーネントは **PC/モバイルの 2 ファイル + 振り分け index.jsx + 各 CSS Modules** という共通構成。
-> 該当: `Nav / Hero / About / Skills / Projects / Blog / Contact / Footer`
+> 該当: `Nav / Hero / About / Experience / Projects / Blog / Contact / Footer`
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### `src/App.jsx`
 - **役割**: ルートコンポーネント。PC/モバイル共通で `<Nav>` + `<main>` + `<Footer>` を描画する 1 ページ縦スクロール構成（以前はモバイルのみ `MobileRouter` による別ページ遷移だったが、PC と同じ構成に統一した）。
-  - `<main>` の中身: `blogSlug` があれば `<BlogPost>`（`variant={isMobile ? 'mobile' : 'desktop'}`、`onBack` で一覧へ戻す）、無ければ `Hero〜Contact` 全セクションを縦に並べる
+  - `<main>` の中身: `blogSlug` があれば `<BlogPost>`（`variant={isMobile ? 'mobile' : 'desktop'}`、`onBack` で一覧へ戻す）、無ければ `Hero → About → Experience → Projects → Blog → Contact` の順で全セクションを縦に並べる（旧 `Skills` セクションを廃止し `Experience` に差し替え済み）
   - 各セクションコンポーネント自身が内部で `useIsMobile()` によって desktop/mobile バリアントを出し分けるため、`App.jsx` 側は分岐不要
   - `BlogPost` は `lazy(() => import('./components/BlogPost'))` で遅延ロードし、`<Suspense fallback={<div className="routeLoading">Loading…</div>}>` でラップ（記事詳細を開いたときだけ該当チャンクを取得。初期バンドル削減のため。以前は `fallback={null}` で無反応だったが、UI/UX レビューでロード中の無反応が指摘され修正）
   - `<a href="#main" className="skip-link">本文へスキップ</a>` を `<Nav>` の直前に配置し、`<main>` に `id="main"` を付与（キーボード/スクリーンリーダー利用者向けのスキップリンク）
@@ -84,13 +84,13 @@
 
 ### `Nav.mobile.jsx`
 - **役割**: モバイル用ナビ。スクロールで `scrolled` 状態、バーガーメニュー（フルスクリーンオーバーレイ）、言語ドロップダウン（JP/EN・見た目のみ）、ロゴ。1 ページスクロール統一に伴い、`Nav.desktop.jsx` と同じ「スクロール位置に応じた背景色同期」を移植済み（各セクションの `getBoundingClientRect()` から現在位置の背景グラデ色を補間し、暗い背景では `dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るく反転）。`computeColor`（背景色計算本体）は `scroll` イベントごとに毎回実行すると高頻度になるため、`requestAnimationFrame` でスロットル化済み（UI/UX レビュー対応。`Nav.desktop.jsx` と同様）。
-- **ロゴのセクション見出し同期**: `sectionTitles`（hero→"About me"、about→"About Me"、skills→"What I Work With"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect"）マップを追加。`computeColor` が背景色補間のために判定している現在セクション `activeId` を `setActiveSection` で state 化し、ロゴは `sectionTitles[activeSection] ?? 'About me'` を表示。`<span key={activeSection}>` で要素を差し替え、`Nav.mobile.module.css` の `logoFade`（opacity 200ms）でフェード切り替えする。色計算ロジック自体（`sectionColors`/`lerpColor`/`isDarkColor`）は不変。
-- **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値）/ `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
+- **ロゴのセクション見出し同期**: `sectionTitles`（hero→"About me"、about→"About Me"、experience→"Milestones"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect"）マップを追加。`computeColor` が背景色補間のために判定している現在セクション `activeId` を `setActiveSection` で state 化し、ロゴは `sectionTitles[activeSection] ?? 'About me'` を表示。`<span key={activeSection}>` で要素を差し替え、`Nav.mobile.module.css` の `logoFade`（opacity 200ms）でフェード切り替えする。色計算ロジック自体（`sectionColors`/`lerpColor`/`isDarkColor`）は不変。
+- **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links`（`#about` / `#experience` / `#projects` / `#blog` / `#contact`。旧 `#skills` は `Experience` セクション新設に伴い `#experience` にリネーム）/ `languages` / `sectionColors`（`Nav.desktop.jsx` と同じ値。旧 `skills` キーは `experience` にリネームしたのみで色自体は流用）/ `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: バーガーボタン・言語ドロップダウントリガーに `aria-expanded={open}` / `aria-expanded={langOpen}`。言語ドロップダウンは `Escape` キー押下で `setLangOpen(false)`。メニューリンクはクリックで `setOpen(false)`（メニューを閉じてから遷移）。
 - **依存**: `Nav.mobile.module.css`
 
 ### `Nav.desktop.jsx`
-- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。`scroll`/`resize` イベントは `scheduleComputeColor` 経由で `requestAnimationFrame` にまとめ、`computeColor` 本体は1フレームにつき最大1回だけ実行するようスロットル化済み（UI/UX レビュー対応）。
+- **役割**: PC 用ナビ（ロゴ・リンク・言語切替）。スクロール位置から現在セクションの背景グラデ色を補間して Nav 背景に反映する `sectionColors` / `computeColor` の仕組みを持つ（`Nav.mobile.jsx` に同ロジックを移植済み）。`scroll`/`resize` イベントは `scheduleComputeColor` 経由で `requestAnimationFrame` にまとめ、`computeColor` 本体は1フレームにつき最大1回だけ実行するようスロットル化済み（UI/UX レビュー対応）。`links` / `sectionColors` / `sectionOrder` / `sectionTitles` の `skills` エントリは、`Skills` セクション廃止・`Experience` セクション新設に伴い `experience` にリネーム済み（`Nav.mobile.jsx` と同様）。
 - **ロゴのセクション見出し同期**: `Nav.mobile.jsx` と同じ `sectionTitles` マップと `activeSection` state による仕組みを持つ（実装内容は上記 `Nav.mobile.jsx` の項を参照）。
 - **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors` / `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: `Nav.mobile.jsx` と同様に `aria-expanded`（バーガー/言語トリガー）と `Escape` での言語ドロップダウン閉じ処理あり。`isDarkColor` 判定のコメント誤りを修正済み。
@@ -122,15 +122,18 @@
 中身はハードコードされた表示専用コンポーネント。
 
 ### `src/components/About/`
-- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、実績、本人写真）。表示データは `src/data/about.jsx` の `facts` / `achievements` を desktop/mobile 両方から import（ハードコード撤廃）。
+- **役割**: 自己紹介・プロフィール（大学/学部/学年/GPA/居住地、Tech Stack バッジ、本人写真）。表示データは `src/data/about.jsx` の `facts` を desktop/mobile 両方から import（ハードコード撤廃）。
 - **写真**: `About.desktop.jsx` / `About.mobile.jsx` で `src/assets/about-photo.jpg` を `import aboutPhoto from '../../assets/about-photo.jpg'` として読み込み、`.photoInner` 内に `<img src={aboutPhoto} className={styles.photo} loading="lazy" />` で表示（NVIDIA GTC 会場前で撮影）。`.photo` は `width/height: 100%; object-fit: cover;` で `.photoInner`（aspect-ratio 4/3）にフィットさせる。旧プレースホルダーの `.photoText` スタイルは削除済み。写真ファイルは品質50で再圧縮済み（448KB → 235KB、解像度 1600×1200 は不変）。
-- **a11y**: 実績アイコンは `<span className={styles.achieveIcon} aria-hidden="true">{icon}</span>` でラップ。`icon` は `src/data/about.jsx` 側で定義した Lucide 由来のインライン SVG（旧絵文字から置換。UI/UX レビュー対応で `about.js` → `about.jsx` にリネーム）。
+- **Tech Stack バッジ**（`Skills` セクション廃止・`Experience`（縦タイムライン）新設に伴い追加。旧・実績カードリスト（自治会委員長/CYPR/生駒祭）はタイムラインへ集約したため About から削除）: `src/data/skills.jsx` の `categories` を import し、`const techStack = [...new Set(categories.flatMap(({ items }) => items))]` で全カテゴリの技術名をフラット化・重複除去（15項目）。facts リストの下に `.skillsLabel`（"Tech Stack"）+ `.skillList`（`<ul>`）→ 各 `.skillBadge`（`<li>`、コンパクトな角丸バッジ）として表示。`categories[].icon`（SVG）はここでは使用しない（テキストのみ）。
+- **旧実装との差分**: 旧 `achievements`（`src/data/about.jsx` の `achievements` export・`.achievement`/`.achieveIcon`/`.achieveBody`/`.achieveTitle`/`.achieveBadge`/`.achieveSub` 一式）は削除・置換済みだが、`src/data/about.jsx` 側の `achievements` export 自体は残っており、参照元が無くなったため未使用（未整理として残置）。
 - **背景**: `.about` は desktop/mobile 共通で `linear-gradient(to bottom, #dfe9e6 0%, #b9d2d3 100%)`（Hero の終端色から連続。mobile は元々単色 `var(--white)` だったが 1 ページスクロール化に伴い desktop と揃えた）。
 
-### `src/components/Skills/`
-- **役割**: スキルカード（Frontend / Mobile / Language / Tools）。表示データは `src/data/skills.jsx` の `categories` を desktop/mobile 両方から import。
-- **a11y**: カテゴリアイコンは `<span className={styles.icon} aria-hidden="true">{cat.icon}</span>` でラップ。`icon` は `src/data/skills.jsx` 側で定義した Lucide 由来のインライン SVG（旧絵文字から置換。UI/UX レビュー対応で `skills.js` → `skills.jsx` にリネーム）。
-- **背景**: `.skills` は desktop/mobile 共通で `linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%)`（About の終端色から連続）。`.section-label` は新変数 `--clay-dark`(#7a4327) に変更し、この背景上でコントラスト比 4.97（WCAG AA 達成、UI/UX レビュー対応）。
+### `src/components/Experience/`
+- **役割**: 参加イベント・実績を新しい順の縦タイムラインで表示するセクション（`id="experience"`、大見出し "Milestones"）。旧 `Skills`（What I Work With、スキルカード）セクションを廃止して新設・置き換え。表示データは `src/data/experience.js` の `experience` を desktop/mobile 両方から import。
+- **主要**（`Experience.desktop.jsx` / `Experience.mobile.jsx` はほぼ同一構造、`.module.css` のみサイズ差）: `experience.map` で `<ul className={styles.timeline}>` の各 `<li>` を描画。各項目は左に `.rail`（`aria-hidden="true"`）+ `.dot`（`.timeline::before` の縦の接続ラインに重なるドット）、右に `.card`（`.meta` 内に `<time dateTime={item.date}>` の日付・`item.tag` があれば `.tag` ピル・`item.inProgress` があれば "In Progress" の `.badge`、続けて `.title` / `.description`）。`fade-in fade-in-delay-${(i % 4) + 1}` + `useScrollReveal()` でスクロール連動フェードイン。
+- **背景**: `.experience` は desktop/mobile 共通で `linear-gradient(to bottom, #b9d2d3 0%, #7ba7b5 100%)`（旧 `Skills` の背景グラデーションをそのまま流用。About の終端色から連続、Nav の `sectionColors.experience` も同じ値）。
+- **依存**: `src/data/experience.js`, `hooks/useScrollReveal`
+- `index.jsx`: `useIsMobile()` で `ExperienceDesktop` / `ExperienceMobile` を振り分け（他セクションと同じ共通パターン）。
 
 ### `src/components/Projects/`
 - **役割**: 制作物カード 4 件（Wagamama Gourmet / フォトブース落書き App / BoardGames on iPhone / RealTimeNoting）。表示データは `src/data/projects.js` の `projects` を desktop/mobile 両方から import。
@@ -178,22 +181,28 @@
 - **主要**: `projects`: `{ id, tag, title, description, tech[], github, demo, accent, inProgress }[]`
 - **参照元**: `Projects.desktop.jsx`, `Projects.mobile.jsx`
 
+### `experience.js`
+- **役割**: Experience セクション（縦タイムライン）の参加イベント・実績データ。新しい順（先頭が最新）に並べる規約。日付はファイル先頭コメントで「暫定・ユーザーが確定/追加する」と明記。
+- **主要**: `experience`: `{ date, title, description, tag?, inProgress? }[]`（`date` は `YYYY.MM` または `YYYY` 形式の文字列、そのまま `<time dateTime>` にも使用）
+- **初期データ**: 2026.04 自治会委員長就任(進行中) / 2026 CYPR立ち上げ(進行中) / 2026.02 KC3HACKハッカソン参加 / 2025.11 生駒祭でアプリ実運用 / 2025.03 NVIDIA GTC参加
+- **参照元**: `Experience.desktop.jsx`, `Experience.mobile.jsx`
+
 ### `socials.jsx`
 - **役割**: Contact セクションの SNS リンク・アイコン（`.jsx` 拡張子は JSX の SVG アイコンを含むため）。
 - **主要**: `socials`: `{ name, url, icon(JSX) }[]`（GitHub / Twitter・X / Instagram / Zenn）。SNS URL は TODO コメントあり（実際のリンクへの差し替え待ち）
 - **参照元**: `Contact.desktop.jsx`, `Contact.mobile.jsx`
 
 ### `skills.jsx`
-- **役割**: Skills セクションのカテゴリ別スキル一覧。`.jsx` 拡張子は `icon` に Lucide 由来のインライン SVG(JSX)を含むため（旧 `skills.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）。
-- **主要**: `categories`: `{ icon(JSX), title, color, items[] }[]`（Frontend/Web, Mobile/App, Language, Tools）
-- **参照元**: `Skills.desktop.jsx`, `Skills.mobile.jsx`
+- **役割**: 技術スタックのカテゴリ別一覧。元々は `Skills` セクション専用データだったが、`Skills` セクション廃止（`Experience` タイムラインへ置換）に伴い、現在は `About` の Tech Stack バッジ列（`categories` を `items` だけフラット化して使用、`icon` は不使用）から参照される唯一のデータ元。`.jsx` 拡張子は `icon` に Lucide 由来のインライン SVG(JSX)を含むため（旧 `skills.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）。
+- **主要**: `categories`: `{ icon(JSX), title, color, items[] }[]`（Frontend/Web, Mobile/App, Language, Tools）。`icon`/`title`/`color` は現状 About からは参照されず未使用（`items` のみ利用）。
+- **参照元**: `About.desktop.jsx`, `About.mobile.jsx`（旧参照元だった `Skills.desktop.jsx` / `Skills.mobile.jsx` はセクション削除に伴い消滅）
 
 ### `about.jsx`
-- **役割**: About セクションのプロフィール事実・実績。`.jsx` 拡張子は `achievements[].icon` に Lucide 由来のインライン SVG(JSX)を含むため（旧 `about.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）。
+- **役割**: About セクションのプロフィール事実。`.jsx` 拡張子は元々 `achievements[].icon` に Lucide 由来のインライン SVG(JSX)を含んでいたため（旧 `about.js` の絵文字アイコンから置換した際にリネーム。UI/UX レビュー対応）だが、`achievements` は `Experience` タイムライン新設に伴い About から参照されなくなり、現在は未使用の export として残置（既知の未整理事項）。
 - **主要**:
-  - `facts`: `{ label, value }[]`（University/Faculty/Year/GPA/Location）
-  - `achievements`: `{ icon(JSX), title, sub, inProgress? }[]`
-- **参照元**: `About.desktop.jsx`, `About.mobile.jsx`
+  - `facts`: `{ label, value }[]`（University/Faculty/Year/GPA/Location）— 唯一使用されているデータ
+  - `achievements`: `{ icon(JSX), title, sub, inProgress? }[]` — **未使用**（旧 About の実績カードリスト用データ。現在は参照元なし）
+- **参照元**: `About.desktop.jsx`, `About.mobile.jsx`（`facts` のみ import）
 
 ---
 

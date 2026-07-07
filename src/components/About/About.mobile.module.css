@@ -88,60 +88,36 @@
   color: var(--dark);
 }
 
-.achievements {
+.skills {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-top: 4px;
 }
 
-.achievement {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  background: var(--sand);
-  border-radius: var(--radius-md);
-  border-left: 3px solid var(--sage-dark);
-}
-
-.achieveIcon {
-  display: flex;
-  align-items: center;
-  color: var(--sage-dark);
-  flex-shrink: 0;
-}
-
-.achieveBody {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.achieveTitle {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.achieveBadge {
+.skillsLabel {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--white);
-  background: var(--clay);
-  padding: 2px 7px;
-  border-radius: 99px;
+  color: var(--clay-dark);
 }
 
-.achieveSub {
+.skillList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.skillBadge {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
-  color: var(--text-light);
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--sand);
+  color: var(--dark);
+  border: 1px solid var(--sand-dark);
 }

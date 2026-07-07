@@ -1,7 +1,10 @@
 import { useScrollReveal } from '../../hooks/useScrollReveal'
-import { facts, achievements } from '../../data/about'
+import { facts } from '../../data/about'
+import { categories } from '../../data/skills.jsx'
 import aboutPhoto from '../../assets/about-photo.jpg'
 import styles from './About.desktop.module.css'
+
+const techStack = [...new Set(categories.flatMap(({ items }) => items))]
 
 export default function AboutDesktop() {
   useScrollReveal()
@@ -42,20 +45,14 @@ export default function AboutDesktop() {
               ))}
             </ul>
 
-            <ul className={`${styles.achievements} fade-in fade-in-delay-4`}>
-              {achievements.map(({ icon, title, sub, inProgress }) => (
-                <li key={title} className={styles.achievement}>
-                  <span className={styles.achieveIcon} aria-hidden="true">{icon}</span>
-                  <div className={styles.achieveBody}>
-                    <span className={styles.achieveTitle}>
-                      {title}
-                      {inProgress && <span className={styles.achieveBadge}>In Progress</span>}
-                    </span>
-                    <span className={styles.achieveSub}>{sub}</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <div className={`${styles.skills} fade-in fade-in-delay-4`}>
+              <p className={styles.skillsLabel}>Tech Stack</p>
+              <ul className={styles.skillList}>
+                {techStack.map((item) => (
+                  <li key={item} className={styles.skillBadge}>{item}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,25 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 09:55 — Skills セクションを Experience(参加イベント縦タイムライン)に置き換え
+
+**立案:**
+- 依頼: Skills(What I Work With)セクションを廃止し、参加イベントの履歴を縦タイムラインで表示する「Experience」セクションに置き換える。使える技術スタックは About にコンパクトなバッジ列として小さく残す(ユーザー選択済み)。
+- 計画(2エージェント並列):
+  - A: `src/components/Experience/`(新規、desktop/mobile/index/CSS)と `src/data/experience.js`(新規、参加イベントの縦タイムライン)を作成。`App.jsx` で Skills→Experience に差し替え。Nav の links/sectionColors/sectionOrder/sectionTitles を skills→experience にリネーム(ラベル「Experience」、大見出し「Milestones」)。`src/components/Skills/` を削除。既存のグラデーション(skills スロット #b9d2d3→#7ba7b5)とロゴ同期は維持。
+  - B: About(desktop/mobile)に技術スタックのコンパクトなバッジ列を追加(`src/data/skills.jsx` から)。重複する About の実績リスト(自治会委員長・CYPR・生駒祭)はタイムラインへ集約するため About から削除。
+- タイムライン初期データは既知イベントの下書き(日付暫定): 2026.04 自治会委員長就任, CYPR立ち上げ(進行中), 2026.02 KC3HACK, 2025.11 生駒祭, 2025.03 NVIDIA GTC。
+- 影響範囲: `src/components/Experience`(新)/`src/components/Skills`(削除)/`src/components/Nav`/`src/components/About`、`src/App.jsx`、`src/data/experience.js`(新)。
+- ブランチ: `feature/20260707-0955-experience-timeline`
+
+**完了** ✅
+- `src/components/Experience/`(新規): `Experience.desktop.jsx` / `Experience.mobile.jsx` / `index.jsx`(`useIsMobile` 振り分け) / 各 `.module.css`。`src/data/experience.js` の `experience` 配列(`date`/`title`/`description`/`tag`(任意)/`inProgress`(任意)、新しい順)を `<ul className={styles.timeline}>` で縦タイムライン表示。各項目は左に接続ライン+ドット(`.rail`/`.dot`)、右にカード(`.card`、日付・タグ・In Progress バッジ・タイトル・説明)。`fade-in fade-in-delay-{1〜4}` でスクロール連動フェードイン(`useScrollReveal`)。背景は旧 Skills と同じグラデーション(`#b9d2d3 → #7ba7b5`)を流用。
+- `src/data/experience.js`(新規): 参加イベント5件(自治会委員長就任・CYPR立ち上げ・KC3HACK・生駒祭・NVIDIA GTC)。日付はコメントで「暫定、ユーザーが確定・追加する」と明記。
+- `src/components/Skills/`(5ファイル)を削除。
+- `src/App.jsx`: `Skills` の import・JSX を `Experience` に差し替え(セクション順は About→Experience→Projects→Blog→Contact のまま維持)。
+- `Nav.desktop.jsx` / `Nav.mobile.jsx`: `links` の `#skills`→`#experience`(ラベル "Experience")、`sectionColors`/`sectionOrder` の `skills`→`experience`(色は従来の skills スロットをそのまま流用)、`sectionTitles.skills`("What I Work With")→`sectionTitles.experience`("Milestones"、Experience の大見出しと一致)。
+- `About.desktop.jsx` / `About.mobile.jsx`: `src/data/about.jsx` の `achievements` import・表示リストを削除し、`src/data/skills.jsx` の `categories` をフラット化した `techStack`(`[...new Set(categories.flatMap(({ items }) => items))]`、15項目・重複除去)を facts の下に "Tech Stack" ラベル付きバッジ列(`.skillBadge`)として追加。CSS も `.achievements`/`.achievement`/`.achieveIcon`/`.achieveBody`/`.achieveTitle`/`.achieveBadge`/`.achieveSub` を `.skills`/`.skillsLabel`/`.skillList`/`.skillBadge` に置換(desktop/mobile 両方)。
+- **既知の未整理**(今回は放置、ユーザー承認済み): `src/data/about.jsx` の `achievements` export が参照元なしに(未使用)。`src/data/skills.jsx` の SVG アイコン(`categories[].icon`)は Skills 削除後も About から `categories` は import されているが `icon` フィールド自体は About 側で使っていないため実質未使用。
+- 検証: `npm run lint` 0件、`npm run build` 成功。ヘッドレスブラウザで desktop/mobile 双方、Experience セクションの表示・Nav リンク/ロゴ同期・About の Tech Stack バッジを目視確認済み。
+
 ## 2026-07-06 14:58 — ナビロゴをスクロール位置の見出しに同期
 **立案:**
 - 依頼: 左上ナビのロゴを、スクロール位置に応じて現在表示中セクションの大見出しに切り替える(常に固定テキストではなく、hero→"About me"、about→"About Me"、skills→"What I Work With"、projects→"Selected Works"、blog→"Recent Posts"、contact→"Let's Connect" のように動的表示)。

@@ -3,7 +3,7 @@ import styles from './Nav.mobile.module.css'
 
 const links = [
   { href: '#about', label: 'About' },
-  { href: '#skills', label: 'Skills' },
+  { href: '#experience', label: 'Experience' },
   { href: '#projects', label: 'Projects' },
   { href: '#blog', label: 'Blog' },
   { href: '#contact', label: 'Contact' },
@@ -19,19 +19,19 @@ const languages = [
 const sectionColors = {
   hero:     [[0xf7, 0xf3, 0xee], [0xdf, 0xe9, 0xe6]],
   about:    [[0xdf, 0xe9, 0xe6], [0xb9, 0xd2, 0xd3]],
-  skills:   [[0xb9, 0xd2, 0xd3], [0x7b, 0xa7, 0xb5]],
+  experience: [[0xb9, 0xd2, 0xd3], [0x7b, 0xa7, 0xb5]],
   projects: [[0x7b, 0xa7, 0xb5], [0x4a, 0x77, 0x95]],
   blog:     [[0x4a, 0x77, 0x95], [0x24, 0x3f, 0x5e]],
   contact:  [[0x24, 0x3f, 0x5e], [0x0d, 0x1c, 0x2e]],
 }
 
-const sectionOrder = ['hero', 'about', 'skills', 'projects', 'blog', 'contact']
+const sectionOrder = ['hero', 'about', 'experience', 'projects', 'blog', 'contact']
 
 // 各セクションの大見出し。ロゴ表示テキストに使う(実際の見出しと一致させること)
 const sectionTitles = {
   hero: 'About me',
   about: 'About Me',
-  skills: 'What I Work With',
+  experience: 'Milestones',
   projects: 'Selected Works',
   blog: 'Recent Posts',
   contact: "Let's Connect",

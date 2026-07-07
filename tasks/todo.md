@@ -1,5 +1,21 @@
 # todo.md
 
+## 2026-07-07 Skills セクションを Experience(参加イベント縦タイムライン)に置き換え
+
+作業ブランチ: `feature/20260707-0955-experience-timeline`
+
+- [x] update.md に立案エントリ追記
+- [x] src/data/experience.js を新規作成(参加イベントの縦タイムラインデータ: 2026.04 自治会委員長就任, CYPR立ち上げ(進行中), 2026.02 KC3HACK, 2025.11 生駒祭, 2025.03 NVIDIA GTC)
+- [x] エージェントA: src/components/Experience/(desktop/mobile/index/CSS)を新規作成
+- [x] エージェントA: App.jsx で Skills→Experience に差し替え
+- [x] エージェントA: Nav の links/sectionColors/sectionOrder/sectionTitles を skills→experience にリネーム(ラベル「Experience」、大見出し「Milestones」)、既存グラデーション(#b9d2d3→#7ba7b5)とロゴ同期は維持
+- [x] エージェントA: src/components/Skills/ を削除
+- [x] エージェントB: About(desktop/mobile)に技術スタックのコンパクトなバッジ列を追加(src/data/skills.jsx から)
+- [x] エージェントB: About の重複実績リスト(自治会委員長・CYPR・生駒祭)を削除(タイムラインへ集約)
+- [x] npm run lint / npm run build 成功確認
+- [x] update.md に完了追記
+- [x] detail.md を更新(Experience 新規/Skills 削除/Nav/About/App.jsx/experience.js)
+
 ## 2026-07-06 ナビロゴをスクロール位置の見出しに同期
 
 作業ブランチ: `feature/20260706-1458-nav-logo-sync`

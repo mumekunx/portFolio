@@ -1,4 +1,17 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 10:30 — Experience に年フィルターとスクロール枠を追加
+
+**立案:**
+- 依頼: Experience(Milestones)セクションのタイムラインが件数増加で縦に伸び続けるため、(1) 年ごとの絞り込みチップと (2) 高さ固定のスクロール枠を追加する。項目は常時表示とし、スクロール連動フェードインは撤去する。
+- 計画: `experience` から年(`date.slice(0,4)`)を降順で抽出し `useState('all')` の `selectedYear` でチップ切り替え、`useMemo` で絞り込みリストを算出。`<ul className={styles.timeline}>` を `ref`/`tabIndex`/`role="group"` 付きの `.scrollArea` でラップし、`max-height` + `mask-image` で上下フェード、`::-webkit-scrollbar` をサイト共通の見た目(sage色サム)に合わせる。フィルタ切り替え時は `useEffect` で `scrollTop` を 0 にリセット。`<li>` から `fade-in fade-in-delay-*` を除去(`useScrollReveal()` 自体は残置)。
+- 影響範囲: `src/components/Experience/Experience.desktop.jsx`, `Experience.mobile.jsx`, `Experience.desktop.module.css`, `Experience.mobile.module.css`。
+- ブランチ: `feature/20260707-0955-experience-timeline`(既存ブランチ継続)
+
+**完了** ✅
+- 両 jsx に `selectedYear` state・`years`/`filtered` の `useMemo`・`scrollRef` の `useRef` を追加。見出しとタイムラインの間に `role="group" aria-label="Filter by year"` のチップ行("All" + 年の実ボタン、`aria-pressed` で選択状態を表現)を配置。`<ul>` を `.scrollArea`(`ref`/`tabIndex={0}`/`role="group"` aria-label="Milestones timeline")でラップし、絞り込み結果が0件の場合は `.empty`("該当なし")を表示するガードを追加。`<li>` は `styles.item` のみ(fade-in系クラスを削除)、`<ul>` には `key={selectedYear}` + `.timelineFade`(200ms opacity 0→1 の keyframes)を付与しフィルタ切替時の軽いリフレッシュ演出とした。
+- CSS: `.chip` は font-mono・pill型・非活性時は半透明白地に `color: var(--dark)`(`.tag` と同じコントラスト設計を流用)、活性時(`[aria-pressed="true"]`)は `background: var(--dark)` / `color: var(--sand)`。`.scrollArea` は `overflow-y:auto` + `touch-action:pan-y` + `overscroll-behavior:contain`、`max-height` は desktop `min(58vh, 520px)` / mobile `62vh`、`mask-image`/`-webkit-mask-image` は上下フェード距離を desktop 24px・mobile 20px(サイズ差に合わせて微調整)。スクロールバーは `::-webkit-scrollbar` を幅6px・track透明・thumb `var(--sage)` 角丸3pxでサイト共通スタイルに合わせた。
+- 検証: `npx eslint src/components/Experience` 0件、`npm run build` 成功。ヘッドレスChromium(CDP経由)で desktop(1440×1200、All/2026年フィルタ後)と mobile(390×844)を撮影し目視確認 — チップの活性/非活性配色、フィルタでリストが絞り込まれる挙動、スクロール枠の右端に sage 色スクロールバーが表示されること、モバイルでもチップが折り返され横あふれがないことを確認。
+
 ## 2026-07-07 09:55 — Skills セクションを Experience(参加イベント縦タイムライン)に置き換え
 
 **立案:**

@@ -1,5 +1,21 @@
 # todo.md
 
+## 2026-07-07 Experience に年フィルターとスクロール枠を追加
+
+作業ブランチ: `feature/20260707-0955-experience-timeline`
+
+- [x] update.md に立案エントリ追記
+- [x] Experience.desktop.jsx / Experience.mobile.jsx: 年フィルター(useState/useMemo)・chipRow(aria-pressed ボタン)を追加
+- [x] scrollArea ラッパー(ref/tabIndex/role/aria-label)を追加、selectedYear変更でscrollTopリセットするuseEffectを追加
+- [x] <li> から fade-in / fade-in-delay-* を除去(常時表示に変更)、useScrollReveal() 呼び出しは残置
+- [x] 0件時の「該当なし」ガード、key={selectedYear} + timelineFade の軽いフェード演出を追加
+- [x] Experience.desktop.module.css / Experience.mobile.module.css: chip/scrollArea(mask-image フェード・スクロールバー・max-height)のスタイルを追加
+- [x] npx eslint src/components/Experience エラー0件を確認
+- [x] npm run build 成功を確認
+- [x] ヘッドレスChromium(CDP)で desktop(All/年フィルタ後)・mobile のスクリーンショットを撮影し目視確認
+- [x] update.md に完了追記
+- [x] detail.md を更新(Experience セクション)
+
 ## 2026-07-07 Skills セクションを Experience(参加イベント縦タイムライン)に置き換え
 
 作業ブランチ: `feature/20260707-0955-experience-timeline`

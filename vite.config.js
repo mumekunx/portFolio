@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react'
 
 import { cloudflare } from "@cloudflare/vite-plugin";
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(() => ({
   plugins: [react(), cloudflare()],
-  // dev はルートで提供、本番ビルドだけ GitHub Pages 用のベースパスを使う
-  base: command === 'build' ? '/portFolio/' : '/',
+  // Cloudflare 独自ドメイン(ルート)配信のため base は '/'
+  base: '/',
 }))

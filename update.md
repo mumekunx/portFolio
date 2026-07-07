@@ -1,4 +1,15 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 12:42 — Cloudflare 独自ドメイン移行: vite base を /portFolio/ → / に修正(真っ白の解消)
+
+**立案:**
+- 依頼: GitHub Pages(プロジェクトサイト `/portFolio/`)から Cloudflare の独自ドメイン(ルート `/` 配信)へ移行中、`vite.config.js` の `base: command === 'build' ? '/portFolio/' : '/'` により本番ビルドのアセットが `/portFolio/...` を指してしまい、独自ドメインのルート配信では 404(画面が真っ白)になる問題を修正する。
+- 計画: `vite.config.js` の `base` を常に `'/'` に集約する。`command` は base 分岐のためだけに使われていたため `defineConfig` のコールバック引数からも削除。コメントを「GitHub Pages 用のベースパス」から「Cloudflare 独自ドメイン(ルート)配信のため base は '/'」に更新。`plugins`(`react()` / `cloudflare()`)や他設定は変更しない。
+- 影響範囲: `vite.config.js` のみ。
+
+**完了** ✅
+- `vite.config.js`: `export default defineConfig(({ command }) => ({...}))` → `export default defineConfig(() => ({...}))` に変更し、`base: command === 'build' ? '/portFolio/' : '/'` → `base: '/'` に固定。コメントを Cloudflare 用に更新。`plugins: [react(), cloudflare()]` は無変更。
+- 検証: `npm run build` 成功(`dist/index.html`, `dist/assets/*` 生成)。`grep -o 'src="[^"]*"' dist/index.html` / `grep -o '/assets/[^"]*' dist/index.html` で確認したところアセットパスは `/assets/index-*.js` `/assets/index-*.css` となり `/portFolio/` プレフィックスは付かなくなった。`grep -c "portFolio" dist/index.html` は 1 件ヒットしたが、内容は `<meta property="og:url" content="https://mumekunx.github.io/portFolio/" />`(ソースの `index.html` に元々ある OGP メタタグ、GitHub Pages 時代の URL)であり、アセットパスとは無関係。今回のタスク範囲は `vite.config.js` のみのため `index.html` は未修正(別途対応が必要であれば要フォローアップ)。
+
 ## 2026-07-07 11:00 — デスクトップNavのリンク位置をロゴ幅に依存せず固定
 
 **立案:**

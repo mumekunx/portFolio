@@ -20,10 +20,10 @@ export default function ContactMobile() {
         </p>
 
         <a
-          href="mailto:mumekun.syuto0614@gmail.com"
+          href="mailto:shutoiwai@cypr.jp"
           className={`${styles.mailBtn} fade-in fade-in-delay-2`}
         >
-          mumekun.syuto0614@gmail.com
+          shutoiwai@cypr.jp
         </a>
 
         <ul className={`${styles.socials} fade-in fade-in-delay-3`}>

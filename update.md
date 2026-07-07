@@ -1,4 +1,16 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 12:55 — Contact のメールアドレスを shutoiwai@cypr.jp に変更
+
+**立案:**
+- 依頼: Contact セクションのメールアドレスを `mumekun.syuto0614@gmail.com` から `shutoiwai@cypr.jp` に変更する依頼を受けた。
+- 計画: `Contact.desktop.jsx` / `Contact.mobile.jsx` の mailto href と表示テキストの計2箇所ずつ、計4箇所を書き換える。
+- 影響範囲: `src/components/Contact/Contact.desktop.jsx`, `src/components/Contact/Contact.mobile.jsx` のみ。
+
+**完了** ✅
+- `Contact.desktop.jsx`: `href="mailto:mumekun.syuto0614@gmail.com"` → `href="mailto:shutoiwai@cypr.jp"`、表示テキスト `mumekun.syuto0614@gmail.com` → `shutoiwai@cypr.jp` に変更。
+- `Contact.mobile.jsx`: 同様に `href="mailto:mumekun.syuto0614@gmail.com"` → `href="mailto:shutoiwai@cypr.jp"`、表示テキスト `mumekun.syuto0614@gmail.com` → `shutoiwai@cypr.jp` に変更。
+- 検証: `grep -rn "mumekun.syuto0614@gmail.com" src/` はヒット0件(exit code 1)で旧アドレス残存なしを確認。`npx eslint src/components/Contact` はエラー0件。
+
 ## 2026-07-07 12:50 — 独自ドメイン shutoiwai.cypr.jp 移行: og:url / homepage を新ドメインに更新
 
 **立案:**

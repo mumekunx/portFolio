@@ -1,5 +1,20 @@
 # todo.md
 
+## 2026-07-07 デスクトップNavのリンク位置をロゴ幅に依存せず固定
+
+- [x] Nav.desktop.jsx / Nav.desktop.module.css を読んで .inner の flex 構成(logo/menuOverlay(.links)/langWrap/burger)を把握
+- [x] .inner を display:grid; grid-template-columns:1fr auto 1fr の3ゾーン構成に変更
+- [x] .logo{grid-column:1; justify-self:start}(margin-right:48px は削除)
+- [x] .links{grid-column:2; justify-self:center} を追加
+- [x] .langWrap{grid-column:3; justify-self:end}(margin-left:auto は削除、margin-right:16px は維持)
+- [x] npx eslint src/components/Nav エラー0件を確認
+- [x] npm run build 成功を確認
+- [x] ヘッドレスChromium(playwright-core)で hero/about/experience/projects/blog をスクリーンショット、About リンクの left 座標が全セクションで一致することを確認
+- [x] モバイル幅(390px)でも撮影しハンバーガーメニューが崩れていないことを確認
+- [x] update.md に立案+完了追記
+- [x] detail.md の Nav.desktop 記述を更新
+- [x] tasks/todo.md に追記+チェック
+
 ## 2026-07-07 Experience に年フィルターとスクロール枠を追加
 
 作業ブランチ: `feature/20260707-0955-experience-timeline`

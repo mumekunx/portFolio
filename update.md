@@ -1,4 +1,15 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 11:00 — デスクトップNavのリンク位置をロゴ幅に依存せず固定
+
+**立案:**
+- 依頼: デスクトップ Nav でロゴ(`.logoText`)がスクロール位置に応じてセクション見出し(About Me / Milestones / Selected Works / Recent Posts / Let's Connect)に切り替わる際、ロゴのテキスト幅が変わることでその後ろに並ぶナビリンク群(About / Experience / Projects / Blog / Contact)が左右に押されて動いてしまう問題を修正する。
+- 計画: `Nav.desktop.module.css` の `.inner` を `display:flex; justify-content:space-between` から `display:grid; grid-template-columns:1fr auto 1fr` の3ゾーン構成に変更。`.logo{grid-column:1; justify-self:start}` / `.links{grid-column:2; justify-self:center}` / `.langWrap{grid-column:3; justify-self:end}` を明示指定し、中央カラムはリンク群の内容幅のみ(`auto`)、左右の `1fr` が余白を均等吸収することでロゴ幅に関わらずリンク群を常に中央固定にする。JSX(`Nav.desktop.jsx`)の DOM 構造・機能(スクロール連動背景色・ロゴのセクション名同期・dark クラス等)は変更しない。対象は `Nav.desktop.jsx` / `Nav.desktop.module.css` のみ、`Nav.mobile.*` は現状維持。
+- 影響範囲: `src/components/Nav/Nav.desktop.module.css`(`.inner`/`.logo`/`.links`/`.langWrap`)。JSX・モバイル・他ファイルは変更なし。
+
+**完了** ✅
+- `Nav.desktop.module.css`: `.inner` を grid 化(`grid-template-columns:1fr auto 1fr; column-gap:24px`)。`.logo` から `margin-right:48px` を削除し `grid-column:1; justify-self:start` を追加。`.links` に `grid-column:2; justify-self:center` を追加(既存の `display:flex; gap:36px` は維持)。`.langWrap` から `margin-left:auto` を削除し `grid-column:3; justify-self:end` を追加(`margin-right:16px` は維持)。`.burger` は desktop で常に `display:none`(モバイル判定は `useIsMobile()` によるコンポーネント切替のため)なので grid には影響しない。JSX は無変更。
+- 検証: `npx eslint src/components/Nav` 0件、`npm run build` 成功。ヘッドレス Chromium(playwright-core 経由、1440×900)で hero/about/experience/projects/blog の5セクションにスクロールしスクリーンショットを撮影、「About」リンクの `getBoundingClientRect().left` が全セクションで `519.234375px` と完全一致することを確認(ロゴが短い「About Me」と長い「Selected Works」でも同一)。モバイル幅(390px)でもスクリーンショットを撮影し、ハンバーガーメニュー表示のまま崩れがないことを確認(`Nav.mobile.*` 無変更のため想定通り)。
+
 ## 2026-07-07 10:30 — Experience に年フィルターとスクロール枠を追加
 
 **立案:**

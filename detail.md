@@ -94,8 +94,10 @@
 - **ロゴのセクション見出し同期**: `Nav.mobile.jsx` と同じ `sectionTitles` マップと `activeSection` state による仕組みを持つ（実装内容は上記 `Nav.mobile.jsx` の項を参照）。
 - **主要 state**: `scrolled` / `navColor` / `activeSection` / `open` / `lang` / `langOpen`、内部定数 `links` / `languages` / `sectionColors` / `sectionOrder` / `sectionTitles`、関数 `lerp` / `lerpColor` / `isDarkColor`
 - **a11y**: `Nav.mobile.jsx` と同様に `aria-expanded`（バーガー/言語トリガー）と `Escape` での言語ドロップダウン閉じ処理あり。`isDarkColor` 判定のコメント誤りを修正済み。
+- **リンク位置のロゴ幅非依存化(2026-07-07)**: DOM 構造(`.logo` → `.menuOverlay`(`display:contents`)配下の `.links` → `.langWrap` → `.burger`)自体は変更していない。JSX は無変更、CSS のみで対応(詳細は下記 `.module.css` の項)。
 ### `Nav.{mobile,desktop}.module.css`
 - **役割**: 各バージョンのスタイル。`.scrolled` は `var(--nav-bg)`（JS から設定）を背景に使用し、`.dark` クラスでロゴ/リンク/バーガー/言語ボタンの文字色を明るい色に切り替える（両バージョン共通の仕組み）。`.logo` はセクション見出し同期でテキスト長が変化するため `white-space: nowrap` / `overflow: hidden` / `text-overflow: ellipsis` / `max-width`（desktop: 40vw, mobile: 54vw）を設定してレイアウト崩れを防止。モバイルは長い見出しが収まるよう `.logo` の `font-size` を 1.5rem → 1.15rem に縮小。`.logoText` に `logoFade`（opacity 0→1, 200ms ease）の `@keyframes` を適用し、`key={activeSection}` による要素差し替え時に軽くフェードする。
+- **`Nav.desktop.module.css` の `.inner` レイアウト(2026-07-07 変更)**: 従来は `display:flex; justify-content:space-between` + `.logo{margin-right:48px}` + `.langWrap{margin-left:auto}` で、ロゴのテキスト幅(`.logoText` がセクション見出しに同期して変わる)がそのままリンク群の開始位置をずらす原因になっていた(「About Me」の短いロゴと「Selected Works」の長いロゴでリンクの x 座標が変わる不具合)。`.inner` を `display:grid; grid-template-columns:1fr auto 1fr; column-gap:24px` の3ゾーン構成に変更し、`.logo{grid-column:1; justify-self:start}` / `.links{grid-column:2; justify-self:center}` / `.langWrap{grid-column:3; justify-self:end}` を明示指定。中央カラムは `auto`(リンク群の内容幅のみ)なので、左右の `1fr` が余白を均等吸収し、ロゴ幅に関わらずリンク群は常にナビ中央に固定される。`.menuOverlay{display:contents}` はそのままのため `.links`(ul)が実際の grid item になる点に注意。`.burger` は desktop では常に `display:none`(モバイル判定は `Nav/index.jsx` の `useIsMobile()` によるコンポーネント切替で、CSS メディアクエリではない)ため grid には参加せず影響なし。`Nav.mobile.module.css` は今回変更なし(モバイルは flex レイアウトのまま現状維持)。
 
 ---
 

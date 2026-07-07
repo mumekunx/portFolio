@@ -224,13 +224,13 @@
 - `hero.png`（Hero 用画像）, `about-photo.jpg`（About セクションの本人写真、1600×1200・4:3・NVIDIA GTC 会場前で撮影）, `react.svg` / `vite.svg`（テンプレート残骸）
 
 ### `index.html`
-- **役割**: HTML テンプレート。`#root` と `main.jsx` の読み込み。`<title>Iwai Shuto | Portfolio</title>`、meta description、OGP（`og:title`/`og:description`/`og:type` 等、`og:image` は画像未確定のため TODO）、`twitter:card` を設定済み。
+- **役割**: HTML テンプレート。`#root` と `main.jsx` の読み込み。`<title>Iwai Shuto | Portfolio</title>`、meta description、OGP（`og:title`/`og:description`/`og:type`/`og:url`(独自ドメイン `https://shutoiwai.cypr.jp/`)等、`og:image` は画像未確定のため TODO）、`twitter:card` を設定済み。
 
 ### `vite.config.js`
 - **役割**: Vite 設定。`base` は Cloudflare 独自ドメイン(ルート)配信のため常に `/`(GitHub Pages 用の `/portFolio/` 分岐は廃止)。
 
 ### `package.json`
-- **役割**: 依存・スクリプト。`dev` / `build` / `lint` / `preview` / `deploy`(gh-pages)。`homepage` は `https://mumekunx.github.io/portFolio/`。`gh-pages` はビルド成果物には含まれないため `dependencies` から `devDependencies` へ移動済み。
+- **役割**: 依存・スクリプト。`dev` / `build` / `lint` / `preview` / `deploy`(gh-pages)。`homepage` は独自ドメイン `https://shutoiwai.cypr.jp/`(旧 GitHub Pages URL から更新済み)。`gh-pages` はビルド成果物には含まれないため `dependencies` から `devDependencies` へ移動済み。
 
 ### `eslint.config.js`
 - **役割**: ESLint 設定（react-hooks / react-refresh プラグイン）。

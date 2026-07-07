@@ -11,7 +11,7 @@
     "predeploy": "npm run build",
     "deploy": "npm run build && wrangler deploy"
   },
-  "homepage": "https://mumekunx.github.io/portFolio/",
+  "homepage": "https://shutoiwai.cypr.jp/",
   "dependencies": {
     "highlight.js": "^11.11.1",
     "react": "^19.2.5",

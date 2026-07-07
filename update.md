@@ -1,4 +1,16 @@
 # Portfolio プロジェクト概要
+## 2026-07-07 12:50 — 独自ドメイン shutoiwai.cypr.jp 移行: og:url / homepage を新ドメインに更新
+
+**立案:**
+- 依頼: 公開ドメインが独自ドメイン `shutoiwai.cypr.jp` になったことに合わせ、旧 GitHub Pages URL `https://mumekunx.github.io/portFolio/` への参照を新ドメイン `https://shutoiwai.cypr.jp/` に更新する。前エントリ(12:42)で index.html の OGP URL 未修正が課題として残っていたことのフォローアップ。
+- 計画: `index.html` の `<meta property="og:url">` を新ドメインに書き換える(`og:image` の TODO コメントは維持)。`package.json` の `homepage` も新ドメインに更新(`gh-pages` 自体は廃止予定だが値が古いまま残っていたため是正)。対象は `index.html` / `package.json` のみ、`src/` 配下・`.github/` 配下(deploy.yml)は対象外。
+- 影響範囲: `index.html`(`og:url` meta タグ)、`package.json`(`homepage` フィールド)。
+
+**完了** ✅
+- `index.html`: `<meta property="og:url" content="https://mumekunx.github.io/portFolio/" />` → `<meta property="og:url" content="https://shutoiwai.cypr.jp/" />` に変更。`og:image` の TODO コメントはそのまま維持。canonical 等の他の同URL参照は無し。
+- `package.json`: `"homepage": "https://mumekunx.github.io/portFolio/"` → `"homepage": "https://shutoiwai.cypr.jp/"` に変更。
+- 検証: `grep -rn "mumekunx.github.io/portFolio" index.html package.json` はヒット0件(exit code 1)で旧URL残存なしを確認。
+
 ## 2026-07-07 12:42 — Cloudflare 独自ドメイン移行: vite base を /portFolio/ → / に修正(真っ白の解消)
 
 **立案:**
